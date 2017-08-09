@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$page_variable["page_title"]}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/baby.css">
+</head>
+
+<body>
+<header class="affix">
+    <i class="glyphicon glyphicon-menu-left"></i>
+    <div class="baby-font"><a href="" class="pull-right">保存</a>{$page_variable["page_title"]}</div>
+</header>
+
+<section>
+    <div class="vernier">
+        <ul class="ver-left">
+            <li>8</li>
+            <li>7</li>
+            <li>6</li>
+            <li>5</li>
+            <li>4</li>
+            <li>3</li>
+            <li>2</li>
+            <li>1</li>
+        </ul>
+        <ul class="ver-right">
+            <li>8.5</li>
+            <li>7.5</li>
+            <li>6.5</li>
+            <li>5.5</li>
+            <li>4.5</li>
+            <li>3.5</li>
+            <li>2.5</li>
+            <li>1.5</li>
+        </ul>
+        <div class="current-box">
+            <div class="current-height heav-body" id="79.2">
+                <h3 class="heightcolor">70<sup>cm</sup></h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/babydata.js"></script>
+<script>
+$(function () {
+    var windowheight = $(window).height();
+    $('.vernier').attr("style", 'margin-bottom:' + windowheight + "px");
+    var boxheight = $('.vernier').height();
+    $('html,body').scrollTop(boxheight-100);
+    var scrollheight = 0;
+    $(window).scroll(function () {
+        scrollheight = $(window).scrollTop();
+        var nowheight = (boxheight - scrollheight - 100) / 100 +70;
+            nowheight = String(nowheight).indexOf('.') > -1 ? nowheight.toFixed(2) : nowheight; 
+        if (nowheight >= 70) {
+            $('#height_link').attr("href","{url('mobi/babydata/selectheight')}&height=" + nowheight)
+            $('.heightcolor').html(nowheight + "<sup>cm</sup>");
+        } else {
+            $('#height_link').attr("href","{url('mobi/babydata/selectheight')}&height=70")
+            $('.heightcolor').html("70<sup>cm</sup>");
+            $('html,body').scrollTop(boxheight-100);
+        }
+    });
+});
+
+fillleft();
+fillright();
+    
+function fillleft () {
+    var lefttemp = '';
+    for (var i = 100; i>=70; i--) {
+        lefttemp += '<li>' + i + '</li>';
+    }
+    $('.ver-left').html(lefttemp);
+}
+    
+function fillright () {
+    var righttemp = '';
+    for (var i = 99.5; i>70; i--) {
+        righttemp += '<li>' + i + '</li>';
+    }
+    $('.ver-right').html(righttemp);
+}
+</script> 
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+	<div class="subnav">
+		<div class="content-menu ib-a blue line-x">
+			<a href="{url('admin/version/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+			{if admin_auth($userinfo['roleid'], 'version-add')}<a href="{url('admin/version/one')}"><em>{lang('a-add')}</em></a><span>|</span>{/if}
+		</div>
+		<div class="bk10"></div>
+		<div class="explain-col">
+			<form action="" method="get">
+				<input type="hidden" name="s" value="admin">
+				<input type="hidden" name="c" value="version">
+				<input type="hidden" name="a" value="index">
+				<!-- <input type="hidden" name="pid" value="3"> -->
+				<select name="plat">
+					<option value="">平台</option>
+					{loop $platforms $k=>$v}
+						<option value="{$v}" {if $v==$map['plat']}selected="selected"{/if}>{$v}</option>
+					{/loop}
+				</select>
+				<input type="text" name="version" class="input-text" placeholder="版本" value="{$map['version']}">
+				<input type="submit" value="查询">
+			</form>
+		</div>
+	</div>
+	
+	<div class="table-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th></th>
+                    <th>ID</th>
+					<th>平台</th>
+					<th>版本</th>
+                    <th>MD5</th>
+					<th>下载地址</th>
+					<th>时间</th>
+					<th width="100">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{loop $data['_data'] $v}
+				<tr>
+					<td><input type="checkbox" name="id[]" value="{$v['vid']}"></td>
+                    <td>{$v['vid']}</td>
+					<td>{$v['plat']}</td>
+					<td>{$v['version']}</td>
+                    <td>{$v['md5']}</td>
+					<td>{$v['download']}</td>
+					<td>{date('Y-m-d H:i:s',$v['create_time'])}</td>
+					<td><a href="{url('admin/version/one',array('id'=>$v['vid']))}">查看</a></td>
+				</tr>
+				{/loop}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+					<td><input type="button" value="删除" class="delAll" data-url="{url('admin/version/del')}"></td>
+					<td colspan="7">{$data['pagelist']}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<script>
+    $(function() {
+        $('.chkAll').on('click',function() {
+            $(':checkbox').not(':last').attr('checked', this.checked);
+        });
+        $('.delAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'id':chk.join(',')},function(json){                
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+    })
+</script>
+</body>
+</html>

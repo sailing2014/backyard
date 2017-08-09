@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/dialog.js"></script>
+    <script type="text/javascript" src="{LANG_PATH}lang.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/core.js"></script>
+    <title>admin</title>
+</head>
+<body style="font-weight: normal;">
+<div class="subnav">
+    <div class="content-menu ib-a blue line-x">
+        <a href="{url('admin/phone_bind/index')}"><em>{lang('a-list')}</em></a>
+        <span>|</span>
+        <a href="javascript:;" class="on"><em>{if $_GET['id']}{lang('a-edit')}{else}{lang('a-add')}{/if}</em></a>
+    </div>
+    <div class="bk10"></div>
+    <div class="table-list">
+        <form method="post" action="">
+
+            <table width="100%" class="table_form">
+                <tbody>
+                <tr>
+                    <th width="20%">ID：</th>
+                    <td>{$data['id']}</td>
+                </tr>
+                {if empty($data['id'])}
+                <tr>
+                    <th>批量添加：</th>
+                    <td>
+                        <label>
+                            <input type="radio" name="batch" value="0"> 否 </label>
+                        <label>
+                            <input type="radio" name="batch" value="1"> 是 </label>
+                    </td>
+                </tr>
+                {/if}
+                <tr class="any">
+                    <th>批量绑定：</th>
+                    <td><textarea name="mobile" cols="50" rows="10"></textarea>
+                    <br>
+                    <div style="clear:both;margin-top:5px;" class="onShow">多个绑定直接使用回车符换行，格式：手机名称[空格]手机型号[回车符]</div></td>
+                </tr>                
+                <tr class="one">
+                    <th>手机名称：</th>
+                    <td><input type="text" name="mobile_name" class="input-text" value="{$data['mobile_name']}"/></td></tr>
+                <tr class="one">
+                    <th>型号：</th>
+                    <td><input type="text" name="mobile_type" class="input-text" value="{$data['mobile_type']}"/></td></tr>
+                <tr>
+                    <th>绑定方式：</th>
+                    <td>
+                        <select name="binding_way">
+                            {loop $binding_way $k =>$v}
+                                <option value='{$k}' {if $k == $data['binding_way']}selected{/if}>{$v}</option>
+                            {/loop}
+                        </select>
+                    </td></tr>
+                <tr>
+                    <th></th>
+                    <td><input type="button" value="保存"/></td></tr>
+                </tr>
+                </tbody>
+            </table>
+
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('.any,.one').hide();
+        if($('[name=batch]').val()==1){
+            $('.any').show();
+            $('.one').hide();
+        }else{
+            $('.any').hide();
+            $('.one').show();
+        }
+        $('[name=batch]').on('click',function(){
+            if($(this).val()==1){                
+                $('.any').show();
+                $('.one').hide();
+            }else{
+                $('.any').hide();
+                $('.one').show();
+            }
+        });
+
+        $('form').submit(function(){return false;});
+        $(':button').on('click',function(){
+            var form = $(this).parents('form');
+            $.post(form.attr('action'),form.serialize(),function(json){
+                alert(json.info);
+                if(json.code){
+                    //history.go(-1);
+                }else{
+                    //location.href="";
+                }
+            },'json');
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+{template mobi/babydata/header}
+<section class="heav text-center">
+    <div class="container">
+        <div class="heav-body">
+            <h3 class="heightcolor">69.2<sup>cm</sup></h3>
+            <h4 class="recordheight hidden"><a href="{url('mobi/babydata/selectheight')}"><i class="glyphicon glyphicon-pen"></i>记录身高…</a></h4>
+            <div class="heav-limit">
+                <div class="switch switch-on pull-right" data-on-label="自动" data-off-label="手动">
+                    <i>自动</i>
+                    <span>自动</span><span>手动</span>
+                </div>
+                <span class="notice-height">宝宝身高超过70cm，可选择手动输入</span>
+            </div>
+            <p>正常范围<span>58.9—67.8</span>cm</p>
+            <div class="notice text-left">宝宝今天身高低于正常范围，建议增强营养，注意休息。如有疑问可去医院检查，排除矮小症等情况。</div>
+        </div>
+        <div class="pull-right history"><a href="javascript:;">历史<br>记录</a></div>
+    </div>
+</section>
+
+<section class="suggestion">
+    <div class="rec-tit"><i class="pull-right glyphicon glyphicon-star"></i>
+        <span class="pull-left"><i class="glyphicon glyphicon-talk"></i>成长建议</span>
+    </div>
+    <div class="sug-list">
+			<div id="tabBox1" class="tabBox">
+				<div class="hd">
+					<ul>
+						<li><a href="javascript:;">喂奶</a></li>
+						<li><a href="javascript:;">辅食</a></li>
+						<li><a href="javascript:;">睡眠</a></li>
+						<li><a href="javascript:;">运动</a></li>
+					</ul>
+				</div>
+				<div class="bd" id="tabBox1-bd"><!-- 添加id，js用到 -->
+					<div class="con"><!-- 高度自适应需添加外层 -->
+						1去医院检查，排除矮小症等建议增强营养，注意休息。如有疑问可去医院检查。
+					</div>
+					<div class="con"><!-- 高度自适应需添加外层 -->
+						2去医院检查，排除矮小症等建议增强营养，注意休息。
+					</div>
+					<div class="con"><!-- 高度自适应需添加外层 -->
+						3去医院检查，排除矮小症等建议增强营养，注意休息。如有疑问可去医院检查，排除矮小症等情况排除矮小症等情况排除矮小症等情况排除矮小症等情况排除矮小症等情况。
+					</div>
+					<div class="con"><!-- 高度自适应需添加外层 -->
+						4去医院检查，排除矮小症等建议增强营养，注意休息。如有疑问可去医院检查，排除矮小症等情况。
+					</div>
+
+				</div>
+			</div>
+    </div>
+</section>
+
+<section class="recommend">
+    <div class="rec-tit">
+        <a href="javascript:;" class="pull-right">更多<i class="pull-right glyphicon glyphicon-menu-right"></i></a>
+        <span class="pull-left"><i class="glyphicon glyphicon-hand-right"></i>推荐阅读</span>
+    </div>
+    <div class="rec-list clearfix">
+        <ul>
+            <li>
+                <a href="javascript:;">
+                    <div class="helpmore-img"><img src="{MOBI_PATH}/public/images/img-test-2.jpg"></div>
+                    <h4>宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点！</h4>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <div class="helpmore-img"><img src="{MOBI_PATH}/public/images/img-test-3.jpg"></div>
+                    <h4>宝贝护理需要掌握哪几点！</h4>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <div class="helpmore-img"><img src="{MOBI_PATH}/public/images/img-test-2.jpg"></div>
+                    <h4>宝贝护理需要掌握哪几点！</h4>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <div class="helpmore-img"><img src="{MOBI_PATH}/public/images/img-test-2.jpg"></div>
+                    <h4>宝贝护理需要掌握哪几点！</h4>
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<div class="filter-box hidden">
+	<div class="filter"></div>
+	<div class="show-history">        
+	</div>
+</div>
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/jquery.flot.js"></script>
+<script src="{MOBI_PATH}/public/js/jquery.flot.time.min.js"></script>
+<script src="{MOBI_PATH}/public/js/babydata.js"></script>
+<script src="{MOBI_PATH}/public/js/TouchSlide.1.1.js"></script>
+
+<script type="text/javascript">
+TouchSlide( { slideCell:"#tabBox1"});
+
+// 加载报表内容
+function setTable() {
+    var d1 = [ [24, 68], [25, 65], [26, 62.5], [27, 69.69], [28, 65], [29, 61], [30, 68] ];    // 曲线参数：  [ 日期，数值 ]
+    var Ymin = 60;   // Y轴最小值
+    var Ymax = 70;  // Y轴最大值
+    var ticks = 5; // Y轴分多少个刻度
+    var units = 'cm'
+    var color = "#3dbaf4";
+    var titles = '最近七天身高数据';
+    var icon = 'icon-height';
+    var setmonths = '十月';
+    
+    var tithtml = '<div class="his-tit"><a href="javascript:;" class="pull-right" onclick="checkview(this)">看列表</i></a><i class="icon-table '+icon+'"></i>'+titles+'</div>';
+    
+    // 图表
+    var pichtml = '<div class="demo-container"><span class="unit">'+units+'</span><span class="setmonths">'+setmonths+'</span><div id="placeholder" class="demo-placeholder"></div></div>';
+    
+    // 列表
+    var listhtml = '<div class="demo-list hidden"><ul>';
+    for (var i = d1.length - 1; i >= 0; i--) {
+        if (i == 6 || i == 2) {
+            listhtml += '<li class="notice"><span class="pull-left">2015/07/'+d1[i][0]+'</span><p class="pull-right"><i class="glyphicon glyphicon-exclamation-sign"></i>'+d1[i][1]+'<sub>'+units+'</sub></p></li>';
+        } else {
+            listhtml += '<li><span class="pull-left">2015/07/'+d1[i][0]+'</span><p class="pull-right">'+d1[i][1]+'<sub>'+units+'</sub></p></li>';
+        }
+    }
+    listhtml += '</ul><div class="clearfix"></div></div>';
+    
+    var sethtml = tithtml + pichtml + listhtml;
+    $('.show-history').html(sethtml);
+    
+    $.plot("#placeholder", [ d1 ],{
+        series: { lines: { show: true }, points: { show: true } },
+        yaxis: { min:Ymin, max:Ymax, ticks:ticks },
+        colors: [color],
+        grid: { hoverable: true, clickable: true }
+    });
+    
+    $("<div id='tooltip'></div>").appendTo("body");
+    $("#placeholder").bind("plothover", function (event, pos, item) {
+        if (item) {
+            var x = item.datapoint[0].toFixed(1),
+                y = item.datapoint[1].toFixed(1);
+
+            $("#tooltip").html(y + units)
+                .css({top: item.pageY-40, left: item.pageX-24})
+                .fadeIn(200);
+        } else {
+            $("#tooltip").hide();
+        }
+    });
+
+    $("#placeholder").bind("plotclick", function (event, pos, item) {
+        if (item) {
+            $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
+        }
+    });
+}
+
+</script>
+</body>
+</html>

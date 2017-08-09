@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/dialog.js"></script>
+    <script type="text/javascript" src="{LANG_PATH}lang.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/core.js"></script>
+    <title>admin</title>
+</head>
+<body style="font-weight: normal;">
+<div class="subnav">
+    <div class="content-menu ib-a blue line-x">
+        <a href="{url('admin/baby/index')}"><em>{lang('a-list')}</em></a>
+        <span>|</span>
+        <a href="javascript:;" class="on"><em>{if $_GET['id']}{lang('a-edit')}{else}{lang('a-add')}{/if}</em></a>
+    </div>
+    <div class="bk10"></div>
+    <div class="table-list">
+        <form method="post" action="">
+            <h3>宝宝信息</h3>
+            <table width="100%" class="table_form">
+                <thead>
+                <tr>
+                    <th>宝宝ID</th>
+                    <th>宝宝昵称</th>
+                    <th>生日</th>
+                    <th>用户ID</th>
+                    <th>添加时间</th>
+                    <th>是否绑定设备</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{$data['id']}</td>
+                    <td>{$data['name']}</td>
+                    <td>{$data['birthday']}</td>
+                    <td>{$data['uid']}</td>
+                    <td>{$data['created_at']}</td>
+                    <td>{if empty($devices)}否{else}是{/if}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3>绑定设备</h3>
+            <table width="100%" class="table_form">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>设备类型</th>
+                    <th>设备ID</th>
+                    <th>主设备ID</th>
+                    <th>绑定时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                {loop $devices $v}
+                <tr>
+                    <td>{$v['id']}</td>
+                    <td>{$device_types[$v['device_type']]['name']}</td>
+                    <td>{$v['device_id']}</td>
+                    <td>{$v['gateway_id']}</td>
+                    <td>{date('Y-m-d H:s',$v['created_at'])}</td>
+                </tr>
+                {/loop}
+                </tbody>
+            </table>
+
+            <h3>宝宝朋友圈</h3>
+            <table width="100%" class="table_form">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>用户ID</th>
+                    <th>备注名称</th>
+                    <th>加入时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                {loop $friends $v}
+                <tr>
+                    <td>{$v['id']}</td>
+                    <td>{$v['uid']}</td>
+                    <td>{$v['entity_relation']}</td>
+                    <td>{$v['into_time']}</td>
+                </tr>
+                {/loop}
+                </tbody>
+            </table>
+
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('form').submit(function(){return false;});
+        $(':button').on('click',function(){
+            var form = $(this).parents('form');
+            $.post(form.attr('action'),form.serialize(),function(json){
+                alert(json.info);
+                if(json.code){
+                    history.go(-1);
+                }else{
+                    location.href="";
+                }
+            },'json');
+        });
+    })
+</script>
+</body>
+</html>

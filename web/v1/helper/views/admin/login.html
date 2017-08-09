@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$SITE_NAME}{lang('admin')}</title>
+    <meta name="robots" content="noindex,nofollow">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="{ADMIN_THEME}v2/css/bootstrap.css" />
+    <link rel="stylesheet" href="{ADMIN_THEME}v2/css/bootstrap-responsive.css" />
+    <link rel="stylesheet" href="{ADMIN_THEME}v2/css/style.css" />
+    <link rel="stylesheet" href="{ADMIN_THEME}v2/css/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="{ADMIN_THEME}v2/css/table_form.css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $("#user").focus();
+        });
+    </script>
+</head>
+<body class='login'>
+<div class="wrapper">
+    <div class="login-body">
+        <h2>{$SITE_NAME}</h2>
+        <form action="" method='post' class='form-validate'>
+            <div class="control-group">
+                <div class="email controls">
+                    <input id="user" type="text" name="username" value="{$username}" placeholder="账号" class='input-block-level' required />
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="pw controls">
+                    <input type="password" id="password" name="password" placeholder="密码" class='input-block-level' required />
+                </div>
+            </div>
+            {if $SITE_ADMIN_CODE}
+            <div class="control-group">
+                <div class="pw controls">
+                    <input type="text" name="code" style="width:210px;" placeholder="验证码" class='input-block-level' />
+                    <label class="dr_code"><img id="code" src="{url('api/captcha/', array('width'=>90, 'height'=>32))}" align="absmiddle" title="{lang('a-com-24')}" onclick="this.src='{url('api/captcha/', array('width'=>90, 'height'=>32))}&'+Math.random();" style="cursor:pointer;"></label>
+                </div>
+            </div>
+            {/if}
+            <div class="submit">
+                <input style="padding: 8px 15px;" name="submit" type="submit" value="登录" class='btn btn-primary'>
+            </div>
+        </form>
+        <div class="forget" style="margin-top: 20px;">         
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+

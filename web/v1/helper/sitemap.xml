@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+		<url>
+			<loc>http://192.168.5.200:50160/v1/helper/index.php?c=content&amp;a=show&amp;id=213</loc>
+			<lastmod>2015-04-13</lastmod>
+			<changefreq>daily</changefreq>
+			<priority>1.0</priority>
+		</url>
+
+		<url>
+			<loc>http://192.168.5.200:50160/v1/helper/index.php?c=content&amp;a=show&amp;id=235</loc>
+			<lastmod>2015-04-13</lastmod>
+			<changefreq>daily</changefreq>
+			<priority>1.0</priority>
+		</url>
+
+		<url>
+			<loc>http://192.168.5.200:50160/v1/helper/index.php?c=content&amp;a=show&amp;id=334</loc>
+			<lastmod>2015-04-13</lastmod>
+			<changefreq>daily</changefreq>
+			<priority>1.0</priority>
+		</url>
+
+		<url>
+			<loc>http://192.168.5.200:50160/v1/helper/index.php?c=content&amp;a=show&amp;id=333</loc>
+			<lastmod>2015-04-13</lastmod>
+			<changefreq>daily</changefreq>
+			<priority>1.0</priority>
+		</url>
+
+		<url>
+			<loc>http://192.168.5.200:50160/v1/helper/index.php?c=content&amp;a=show&amp;id=332</loc>
+			<lastmod>2015-04-13</lastmod>
+			<changefreq>daily</changefreq>
+			<priority>1.0</priority>
+		</url>
+
+		<url>
+			<loc>http://192.168.5.200:50160/v1/helper/index.php?c=content&amp;a=show&amp;id=331</loc>
+			<lastmod>2015-04-13</lastmod>
+			<changefreq>daily</changefreq>
+			<priority>1.0</priority>
+		</url>
+
+		<url>
+			<loc>http://192.168.5.200:50160/v1/helper/index.php?c=content&amp;a=show&amp;id=89</loc>
+			<lastmod>2015-04-13</lastmod>
+			<changefreq>daily</changefreq>
+			<priority>1.0</priority>
+		</url>
+
+	</urlset>
+

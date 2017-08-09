@@ -1,0 +1,19 @@
+<html>
+<head></head>
+<body onload="login()">
+<!--{$message}-->
+<script>
+    function login(){
+        var br;
+        br = navigator.userAgent.toLowerCase();
+        if (/(iphone|ipad|ipod|ios)/i.test(br)) {
+            document.location ="ioslogin:"+"failure";
+        } else if (/(android)/i.test(br)) {
+            window.bbcare_android.login();
+        } else {
+
+        };
+    }
+</script>
+</body>
+</html>

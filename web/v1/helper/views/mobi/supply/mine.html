@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>我的清单-用品清单</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/uselist.css">
+</head>
+
+<body>
+
+<!--<header>
+    <a href="javascript:window.history.go(-1)"><i class="glyphicon glyphicon-menu-left"></i></a>
+    <div class="uselist-font">我的清单</div>
+</header>-->
+
+<section class="section-list my-list">
+		<input type="hidden" name="userlist-mylist-pages" id="userlist-mylist-pages" value="1" />
+    <ul>
+        {loop $list['data'] $v}
+        <li>
+            <div>
+                <a href="javascript:;" class="show-intro">
+                <div class="list-img pull-left"><img src="{$v['thumb']}" onerror="this.src='{MOBI_PATH}/public/images/avatar.jpg'" /></div>
+                <h4 class="pull-left">{$v['title']}</h4>
+                </a>
+                <div class="hidden intro">{htmlspecialchars_decode($v['content'])}</div>
+            </div>
+        </li>
+        {/loop}
+    </ul>
+</section>
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/uselist.js"></script>
+<script>
+$(function () {
+	// 滚到底部加载更多
+	loadpage (url, nowpagebox, showcontent, returnbox);
+});
+
+// 异步请求内容地址
+var url = "{url('mobi/supply/mine')}";
+var nowpagebox = '#userlist-mylist-pages';
+var returnbox = '.section-list ul';
+var showcontent = '';
+/*var showcontent = '<li>\
+            <div>\
+                <a href="javascript:;" class="show-intro">\
+                <div class="list-img pull-left"><img src="{MOBI_PATH}/public/images/img-test-4.jpg" /></div>\
+                <h4 class="pull-left">999宝宝乐奶粉荷兰进口450g</h4>\
+                </a>\
+                <div class="hidden intro">333，鼓励全家一起分享宝宝点滴；</div>\
+            </div>\
+        </li>';*/
+// 分页方法
+function loadpage (url, nowpagebox, showcontent, returnbox, extendsfunction) {
+    // 滚到底部加载更多
+    var flag = 0;
+    $(window).scroll(function(){
+        if($(window).scrollTop() == $(document).height() - $(window).height()){
+            if (flag != 1) {
+                flag = 1;
+                loading();
+
+                //获得当前频道页数
+                var pages = Number($(nowpagebox).val()) + 1;
+
+                $.get(url,{page:pages},function(result){
+                    // 模拟result 有数据和无数据的结果
+                    if (result.data) {           // 判断是否为空
+                        var showcontent = "";
+                        var countsize = "";     // 数据条数
+                        var list = result.data;
+                        //console.log(list);
+                        for (var i=0; i < list.length; i++) {
+                            showcontent += '<li>\
+            <div>\
+                <a href="javascript:;" class="show-intro">\
+                <div class="list-img pull-left"><img src="'+list[i].thumb+'" /></div>\
+                <h4 class="pull-left">'+list[i].title+'</h4>\
+                </a>\
+                <div class="hidden intro">'+list[i].content+'</div>\
+            </div>\
+        </li>';
+                        }
+                        $("" + returnbox).append(showcontent);
+                        $(nowpagebox).val(pages);
+                        flag = 0;
+                    } else {
+                        flag = 1;
+                        if (extendsfunction == 1) {
+                            getcallback();
+                        }
+                    }
+                    $('.loading').remove();
+                });
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>

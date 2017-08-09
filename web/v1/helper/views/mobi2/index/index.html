@@ -1,0 +1,83 @@
+<!doctype html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Cache-Control" content="max-age=0" />
+<meta name="MobileOptimized" content="240" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+<title>育儿助手</title>
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/common.css" type="text/css" />
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/style.css" type="text/css" />
+<style>
+
+
+</style>
+</head>
+<body>
+<div class="mainCon">
+
+<!--顶部图片轮播-->
+
+<div id="slideBox" class="slideBox">
+    <div class="bd">
+         <ul>            
+        </ul> 
+    </div>
+    <div class="hd">
+        <ul></ul>
+    </div>
+</div>
+
+
+  
+  <!--顶部图片轮播-->
+  <!--内容部分-->
+  <div class="AssistantBox">
+  <div class="AssistantTop">育儿助手</div>
+    <ul>
+    <li><i class="icon"><img src="{MOBI_PATH}/public/images/icon1.png" width="12" height="12" alt=""/></i><a href="#">成长贴士<i class="arrow"><img src="{MOBI_PATH}/public/images/rightarrow.png" width="7" height="11" alt=""/></i></a></li>
+    <li><i class="icon"><img src="{MOBI_PATH}/public/images/icon2.png" width="12" height="12" alt=""/></i><a href="#">育儿知识<i class="arrow"><img src="{MOBI_PATH}/public/images/rightarrow.png" width="7" height="11" alt=""/></i></a></li>
+    <li><i class="icon"><img src="{MOBI_PATH}/public/images/icon3.png" width="12" height="12" alt=""/></i><a href="#">营养膳食<i class="arrow"><img src="{MOBI_PATH}/public/images/rightarrow.png" width="7" height="11" alt=""/></i></a></li>
+    </ul>
+  </div>
+  <!---->
+<div class="AssistantBox">
+  <div class="AssistantTop">服务</div>
+    <ul>
+    <li><i class="icon"><img src="{MOBI_PATH}/public/images/icon4.png" width="12" height="12" alt=""/></i><a href="#">儿童意外伤害险<i class="arrow"><img src="{MOBI_PATH}/public/images/rightarrow.png" width="7" height="11" alt=""/></i></a></li>
+    <li><i class="icon"><img src="{MOBI_PATH}/public/images/icon5.png" width="12" height="12" alt=""/></i><a href="#">电话医生<i class="arrow"><img src="{MOBI_PATH}/public/images/rightarrow.png" width="7" height="11" alt=""/></i></a></li>
+    
+    </ul>
+  </div>
+<!--内容部分-->
+</div>
+ 
+<script src ="{MOBI_PATH}/public/js/jquery-1.8.3.min.js"></script> 
+<script src="{MOBI_PATH}/public/js/TouchSlide.1.1.js"></script>
+<script type="text/javascript">
+    
+        $.getJSON("{url('mobi2/index/getadvertData')}", function (json) {
+                        if (json.code) {
+                            var html = "";
+                            var list = json.data;
+                            if (list.length > 0) {
+                                for (var i = 0; i < list.length; i++) {
+                                    html += '<li><a href="'+ list[i].picurl +'"><img src="' + list[i].thumb + '" /></a></li>';
+                                }
+                                
+                                $("#slideBox .bd ul").html(html);
+                                TouchSlide({
+                                    slideCell: "#slideBox",
+                                    titCell: ".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+                                    mainCell: ".bd ul",
+                                    effect: "leftLoop",
+                                    autoPlay:true,
+                                    autoPage: true //自动分页
+                                });
+                            }  
+                        }
+                    });        
+</script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+{template mobi/babydata/header}
+<!-- 体表体温 -->
+<section class="surface">
+    <section class="heav text-center">
+        <div class="container">
+            <div class="heav-body">
+                <h3 class="babyheatcolor">38.5<sup>℃</sup></h3>
+                <p>正常范围<span> 33—34 </span>℃</p>
+                <div class="notice text-left normal">体表体温指的是皮肤表面的温度，低于宝宝的实际体温，且各个部位的温度不统一。例如，当环境温度为23℃时，正常体温的宝宝额部的皮肤温度为33~34℃，躯干为32℃，手为30℃，足为27℃。</div>
+            </div>
+            <div class="pull-right history"><a href="javascript:;">历史<br>记录</a></div>
+            <div class="pull-left switch-helper"><i class="glyphicon glyphicon-question-sign"></i></div>
+        </div>
+    </section>
+    <hr />
+    <section class="moudle-check">
+        <div class="moudle-btn"><a href="javascript:;">启用腋下体温测量模式</a></div>
+        <p>如需测量准确的体温数据，请将温心带佩戴于宝宝腋下。温心带除测量体温外，还能实时监测宝宝心跳、翻身动作。</p>
+    </section>
+    
+    <!-- 帮助的弹框 -->
+    <div class="baby-helper hidden">
+	    <div class="filter"></div>
+        <div class="fp-table">
+            <div class="fp-tableCell">
+                <p>将温心带佩戴于宝宝脚腕或手腕，测量的体温数据是体表体温哦～</p>
+                <div class="helper-img"><img src="{MOBI_PATH}/public/images/min/surface.jpg"></div>
+                <span>测量过程中，记得让温心带和宝宝皮肤进行亲密接触哦！等待10分钟就能测量到数据哦！</span>
+                <a href="javascript:;" class="close-helper">我知道了</a>
+            </div>
+        </div>
+    </div>
+    <!-- 帮助的弹框 END -->
+</section>
+<!-- 体表体温 END -->
+
+<!-- 腋下体温 -->
+<section class="oxter hidden">
+    <section class="heav text-center">
+        <div class="container">
+            <div class="heav-body">
+                <h3 class="babyheatcolor">38.5<sup>℃</sup></h3>
+                <p>正常范围<span> 33—34 </span>℃</p>
+                <div class="notice text-left">温心带检测出宝宝当前体温38.7℃，已超过安全范围值，建议前往就近医院检查。</div>
+            </div>
+            <div class="pull-right history"><a href="javascript:;">历史<br>记录</a></div>
+            <div class="pull-left switch-helper"><i class="glyphicon glyphicon-question-sign"></i></div>
+        </div>
+    </section>
+    <hr />
+    <section class="warn clearfix">
+        <div>
+            <div class="switch switch-on pull-right" data-on-label="开" data-off-label="关">
+                <i></i>
+            </div>
+            <p class="normal">宝宝发烧时，系统每<span class="warn-time">30分钟</span>会发送警报一次，如需调整提醒频率，请进行设置。</p>
+        </div>
+    </section>
+    <hr />
+    <section class="moudle-check">
+        <div class="moudle-btn"><a href="javascript:;">切换至体表体温模式</a></div>
+        <p class="text-center">若切换，请将温心带绑于宝宝脚腕或手腕。</p>
+    </section>
+    
+    <!-- 帮助的弹框 -->
+    <div class="baby-helper hidden">
+	    <div class="filter"></div>
+        <div class="fp-table">
+            <div class="fp-tableCell">
+                <p>宝宝发烧时，可以将温心带绑于腋窝处测量实际体温。</p>
+                <div class="helper-img"><img src="{MOBI_PATH}/public/images/min/oxter.jpg"></div>
+                <span>测量过程中，记得让温心带和宝宝皮肤进行亲密接触哦！等待10分钟就能测量到数据哦！</span>
+                <a href="javascript:;" class="close-helper">我知道了</a>
+            </div>
+        </div>
+    </div>
+    <!-- 帮助的弹框 END -->
+</section>
+<!-- 腋下体温 END -->
+
+<div class="filter-box hidden">
+	<div class="filter"></div>
+	<div class="show-history hidden">
+	</div>
+    <div class="warn-set hidden">
+        <ul>
+            <li class="active"><i class="pull-right"></i><span>1小时</span></li>
+            <li><i class="pull-right"></i><span>2小时</span></li>
+        </ul>
+        <div class="warn-set-font">
+            <p>设置系统消息提示宝宝体温、体表体温数据异常的时间间隔。</p>
+            <p>测量结果可能与宝宝实际体温有出入，数据仅供参考。</p>
+        </div>
+    </div>
+</div>
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/jquery.flot.js"></script>
+<script src="{MOBI_PATH}/public/js/jquery.flot.time.min.js"></script>
+<script src="{MOBI_PATH}/public/js/jquery.flot.fillbetween.js"></script>
+<script src="{MOBI_PATH}/public/js/babydata.js"></script>
+<script src="{MOBI_PATH}/public/js/TouchSlide.1.1.js"></script>
+
+<script>
+
+TouchSlide( { slideCell:"#tabBox1"});
+
+// 加载报表内容
+function setTable() {
+    var surface = $('.surface');
+    if (surface.hasClass('hidden')) {
+        // 体表温度
+        var titles = '最近七天腋下体温数据';
+        var d1 = [ [24, 36.8], [25, 36.9], [26, 37.3], [27, 37.1], [28, 37.2], [29, 37.5], [30, 37.3] ];    // 曲线参数：  [ 日期，数值 ]   最高
+        var d2 = [ [24, 36.3], [25, 36.4], [26, 36.8], [27, 36.6], [28, 36.7], [29, 37.0], [30, 36.8] ];    // 曲线参数：  [ 日期，数值 ]   最低
+    } else {
+        // 腋下温度
+        var titles = '最近七天体表体温数据';
+        var d1 = [ [24, 37.8], [25, 37.9], [26, 37.3], [27, 37.1], [28, 37.2], [29, 37.5], [30, 37.3] ];    // 曲线参数：  [ 日期，数值 ]   最高
+        var d2 = [ [24, 37.3], [25, 37.4], [26, 36.8], [27, 36.6], [28, 36.7], [29, 37.0], [30, 36.8] ];    // 曲线参数：  [ 日期，数值 ]   最低
+    }
+    
+
+    var Ymin = 35;   // Y轴最小值
+    var Ymax = 39;  // Y轴最大值
+    var ticks = 5; // Y轴分多少个刻度
+    var units = '℃'
+    var color = "#3dbaf4";
+    var icon = 'icon-babyheat';
+    var setmonths = '十月';
+    
+    var tithtml = '<div class="his-tit"><a href="javascript:;" class="pull-right" onclick="checkview(this)">看列表</i></a><i class="icon-table '+icon+'"></i>'+titles+'</div>';
+    
+    // 图表
+    var pichtml = '<div class="demo-container"><span class="unit">'+units+'</span><span class="setmonths">'+setmonths+'</span><div id="placeholder" class="demo-placeholder"></div></div>';
+    
+    // 列表
+    var listhtml = '<div class="demo-list demo-list-babyheat hidden"><ul><li><div class="pull-right"><p class="text-center normal">最低</p><p class="text-center normal">最高</p></div></li>';
+    for (var i = d1.length - 1; i >= 0; i--) {
+        if (i == 6 || i == 2) {
+            listhtml += '<li class="notice"><span class="pull-left">2015/07/'+d1[i][0]+'</span><div class="pull-right"><p><i class="glyphicon glyphicon-exclamation-sign"></i>'+d2[i][1]+'<sub>'+units+'</sub></p><p><i class="glyphicon glyphicon-exclamation-sign"></i>'+d1[i][1]+'<sub>'+units+'</sub></p></div></li>';
+        } else {
+            listhtml += '<li><span class="pull-left">2015/07/'+d1[i][0]+'</span><div class="pull-right"><p>'+d2[i][1]+'<sub>'+units+'</sub></p><p>'+d1[i][1]+'<sub>'+units+'</sub></p></div></li>';
+        }
+    }
+    listhtml += '</ul><div class="clearfix"></div></div>';
+    
+    var sethtml = tithtml + pichtml + listhtml;
+    $('.show-history').html(sethtml);
+    
+    
+		var babyheat = {
+                "0%": d1, 
+                "100%": d2 
+             };
+
+		var dataset = [
+			{ id: "f0%", data: babyheat["0%"], lines: { show: true, lineWidth: 0, fill: false }, color: "rgb(110,206,241)" },
+			{ id: "f100%", data: babyheat["100%"], lines: { show: true, lineWidth: 0, fill: 0.6 }, color: "rgb(110,206,241)", fillBetween: "f0%" },
+		];
+        
+		$.plot($("#placeholder"), dataset, {
+            series: { lines: { show: true }, points: { show: true } },
+            yaxis: { min:Ymin, max:Ymax, ticks:ticks },
+            colors: [color],
+            grid: { hoverable: true, clickable: true }
+        });
+    
+    $("<div id='tooltip'></div>").appendTo("body");
+    $("#placeholder").bind("plothover", function (event, pos, item) {
+        if (item) {
+            var x = item.datapoint[0].toFixed(1),
+                y = item.datapoint[1].toFixed(1);
+
+            $("#tooltip").html(y + units)
+                .css({top: item.pageY-40, left: item.pageX-24})
+                .fadeIn(200);
+        } else {
+            $("#tooltip").hide();
+        }
+    });
+
+    $("#placeholder").bind("plotclick", function (event, pos, item) {
+        if (item) {
+            $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
+        }
+    });
+}
+setTable();
+</script>
+</body>
+</html>

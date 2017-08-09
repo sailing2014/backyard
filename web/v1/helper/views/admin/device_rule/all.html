@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+	<div class="subnav">
+		<div class="content-menu ib-a blue line-x">
+			<a href="{url('admin/device_rule/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+			<!--{if admin_auth($userinfo['roleid'], 'config-add')}<a href="{url('admin/device_rule/one')}"><em>{lang('a-add')}</em></a><span>|</span>{/if}-->
+		</div>
+		<div class="bk10"></div>
+		<div class="explain-col">
+			
+		</div>
+	</div>
+	
+	<div class="table-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th></th>
+					<th>ID</th>
+					<th>设备名称</th>
+					<th>传感器</th>
+					<th>正常频率</th>
+					<th>异常频率</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{loop $data $v}
+				<tr>
+					<td><input type="checkbox" name="id[]" value="{$v['device_config_id']}"></td>
+					<td>{$v['device_config_id']}</td>
+					<td>{$devices[$v['device_type']]['name']}</td>
+					<td>
+						{loop $v['sensors'] $kk=>$vv}
+							{$kk}:{$vv}<br>
+					    {/loop}</td>
+					<td>
+						{loop $v['config_value'] $vv}
+							{$vv['default_frequency']} s<br>
+						{/loop}</td>
+					<td>
+						{loop $v['config_value'] $vv}
+							{$vv['temp_frequency']} s<br>
+						{/loop}</td>
+					<td>
+                        <a href="{url('admin/analysis/all',array('id'=>$v['device_type']))}">指标</a> |
+                        <a href="{url('admin/device_rule/one',array('id'=>$v['device_type']))}">修改</a></td>
+				</tr>
+				{/loop}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+					<td>
+                        <!--<input type="button" value="删除" class="delAll" data-url="{url('admin/device_rule/del')}">-->
+                    </td>
+					<td colspan="7">{$data['pagelist']}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<script>
+    $(function() {
+        $('.chkAll').on('click',function() {
+            $(':checkbox').not(':last').attr('checked', this.checked);
+        });
+        $('.delAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'id':chk.join(',')},function(json){                
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+
+    })
+</script>
+</body>
+</html>

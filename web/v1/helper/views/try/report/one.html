@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/dialog.js"></script>
+    <script type="text/javascript" src="{LANG_PATH}lang.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/core.js"></script>
+    <script type="text/javascript" src="extensions/kindeditor/kindeditor.js"></script>
+    <script type="text/javascript" src="extensions/language/zh-cn/kindeditor.js"></script>
+    <link rel="stylesheet" href="extensions/kindeditor/themes/default/default.css"/>
+    <title>admin</title>
+</head>
+<body style="font-weight: normal;">
+<div class="subnav">
+    <div class="content-menu ib-a blue line-x">
+        <a href="{url('try/report/index')}"><em>{lang('a-list')}</em></a>
+        <span>|</span>
+        <a href="javascript:;" class="on"><em>{lang('a-edit')}</em></a>
+    </div>
+    <div class="bk10"></div>
+    <div class="table-list">
+        <form method="post" action="">
+            <table width="100%" class="table_form">
+                <tbody>
+                <tr width="20%">
+                    <th>商品名称：</th>
+                    <td><a href="{url('try/item/one',array('id'=>$data['productId']))}">{$data['product']['productName']}</a>
+                        <input name="productId" type="hidden" value="{$data['productId']}"/></td>
+                </tr>
+                <tr>
+                    <th>用户昵称：</th>
+                    <td><a href="{url('try/propose/one',array('id'=>$data['uid']))}">{$data['nickname']}</a>
+                        <input name="uid" type="hidden" value="{$data['uid']}"/></td>
+                </tr>
+                <tr>
+                    <th>报告主题：</th>
+                    <td><input type="text" class="input-text" name="topic" value="{$data['topic']}" size="80"/></td>
+                </tr>
+                <tr>
+                    <th>优点缺点：</th>
+                    <td><textarea cols="80" rows="10" name="advantage" id="advantage">{$data['advantage']}</textarea></td>
+                </tr>
+                <tr>
+                    <th>试用建议：</th>
+                    <td><textarea cols="80" rows="10" name="advice" id="advice">{$data['advice']}</textarea></td>
+                </tr>
+                <tr>
+                    <th>体验过程：</th>
+                    <td><textarea name="processDes" id="processDes" cols="80" rows="10">{$data['processDes']}</textarea></td>
+                </tr>
+                <tr>
+                    <th>外观分数：</th>
+                    <td>{loop $scoreList $v}
+                        <label for=""><input type="radio" name="facadePoint" value="{$v}"
+                                             {if $v==$data['facadePoint']}checked{/if}/>{$v}分</label>
+                        {/loop}
+                    </td>
+                </tr>
+                <tr>
+                    <th>实用性评分：</th>
+                    <td>{loop $scoreList $v}
+                        <label for=""><input type="radio" name="practicalPoint" value="{$v}"
+                                             {if $v==$data['practicalPoint']}checked{/if}/>{$v}分</label>
+                        {/loop}
+                    </td>
+                </tr>
+                <tr>
+                    <th>易用性评分：</th>
+                    <td>{loop $scoreList $v}
+                        <label for=""><input type="radio" name="usablePoint" value="{$v}"
+                                             {if $v==$data['usablePoint']}checked{/if}/>{$v}分</label>
+                        {/loop}
+                    </td>
+                </tr>
+                <tr>
+                    <th>热门：</th>
+                    <td>{loop $if $k=>$v}
+                        <label for=""><input type="radio" name="hot" value="{$k}"
+                                             {if $k==$data['hot']}checked{/if}/>{$v}</label>
+                        {/loop}</td>
+                </tr>
+                <tr>
+                    <th>推荐：</th>
+                    <td>{loop $if $k=>$v}
+                        <label for=""><input type="radio" name="recommend" value="{$k}"
+                                             {if $k==$data['recommend']}checked{/if}/>{$v}</label>
+                        {/loop}</td>
+                </tr>
+                <tr>
+                    <th>状态：</th>
+                    <td>{loop $statusList $k=>$v}
+                        <label for=""><input type="radio" name="status" value="{$k}"
+                                             {if $k==$data['status']}checked{/if}/>{$v}</label>
+                        {/loop}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td><input type="button" value="提交"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+//    KindEditor.ready(function(K) {
+//        K.create('#processDes', {
+//            allowFileManager: true,
+//            langType: 'zh-cn',
+//            items: [
+//                'source', '|', 'undo', 'redo', '|', 'preview', 'template', 'code', 'cut', 'copy', 'paste',
+//                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+//                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+//                'superscript', 'clearhtml', 'quickformat', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+//                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image',
+//                'flash', 'media', 'table', 'hr', 'emoticons', 'baidumap', 'anchor', 'link', 'unlink', '|', 'stitle', 'pagebreak', 'about'
+//            ],
+//            afterCreate: function () {
+//                this.sync();
+//            },
+//            afterBlur: function () {
+//                this.sync();
+//            }
+//        });
+//    });
+    $('form').submit(function(){return false;});
+    $(':button:last').on('click',function(){
+        var form = $(this).parents('form');
+        $.post(form.attr('action'),form.serialize(),function(json){
+            alert(json.info);
+            if(json.code){
+                history.go(-1);
+            }else{
+                location.href="";
+            }
+        },'json');
+    });
+</script>
+</body>
+</html>

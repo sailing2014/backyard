@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/dialog.js"></script>
+    <script type="text/javascript" src="{LANG_PATH}lang.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/core.js"></script>
+    <title>admin</title>
+</head>
+<body style="font-weight: normal;">
+<div class="subnav">
+    <div class="content-menu ib-a blue line-x">
+        <a href="{url('try/comment/index')}"><em>{lang('a-list')}</em></a>
+        <span>|</span>
+        <a href="javascript:;" class="on"><em>{lang('a-edit')}</em></a>
+    </div>
+    <div class="bk10"></div>
+    <div class="table-list">
+        <form method="post" action="">
+            <table width="100%" class="table_form">
+                <tbody>
+                <tr width="20%">
+                    <th>报告主题：</th>
+                    <td><input type="text" class="input-text" name="productDes" value="{$data['reportId']}"/></td>
+                </tr>
+                <tr>
+                    <th>用户昵称：</th>
+                    <td><input type="text" class="input-text" name="applyAge" value="{$data['commentUid']}"/></td>
+                </tr>
+                <tr>
+                    <th>评论内容：</th>
+                    <td><textarea name="" id="" cols="80" rows="5">{$data['content']}</textarea></td>
+                </tr>
+                <tr>
+                    <th>评论状态：</th>
+                    <td>
+                        {loop $statusList $k=>$v}
+                        <label for=""><input type="radio" name="isDisplay" value="{$k}"  {if $data['isDisplay']==$k}checked{/if}/>{$v}</label>
+                        {/loop}
+                    </td>
+                </tr>
+                <tr>
+                    <th>添加时间：</th>
+                    <td>{$data['creatTime']}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td><input type="button" value="提交"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $('form').submit(function(){return false;});
+    $(':button:last').on('click',function(){
+        var form = $(this).parents('form');
+        $.post(form.attr('action'),form.serialize(),function(json){
+            alert(json.info);
+            if(json.code){
+                history.go(-1);
+            }else{
+                location.href="";
+            }
+        },'json');
+    });
+</script>
+</body>
+</html>

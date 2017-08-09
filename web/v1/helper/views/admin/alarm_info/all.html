@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+	<div class="subnav">
+		<div class="content-menu ib-a blue line-x">
+			<a href="{url('admin/alarm_info/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+			{if admin_auth($userinfo['roleid'], 'alarm_info-add')}<a href="{url('admin/alarm_info/one')}"><em>{lang('a-add')}</em></a><span>|</span>{/if}
+
+            {loop $types $k=>$v}
+                {if $v['pid']>0}
+                <a href="{url('admin/alarm_info/index',array('type_id'=>$v['id']))}" {if $v['id']==$type_id}class="on"{/if}><em>{$v['name']}</em></a><span>|</span>
+                {/if}
+            {/loop}
+		</div>
+		<div class="bk10"></div>
+		<div class="explain-col">
+			
+		</div>
+	</div>
+	
+	<div class="table-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th></th>
+					<th>ID</th>
+                    <th>消息类别</th>
+					<!--<th>消息级别</th>-->
+					<th>消息原因</th>
+					<th>消息方式</th>
+					<th>消息内容</th>
+                    <th>设置时间</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{loop $data['data'] $v}
+				<tr>
+					<td><input type="checkbox" name="id[]" value="{$v['alarm_info_id']}"></td>
+					<td>{$v['alarm_info_id']}</td>
+                    <td>{$types[$v['type_id']]['name']}</td>
+					<!--<td>{$levels[$v['level']]}</td>-->
+					<td>{$v['reason']}</td>
+					<td>{loop $v['method'] $i=>$m}
+                            {php if(!$m) continue;}
+                        • {if $m}{$methods[$i]}<br/>{/if}
+                        {/loop}</td>
+					<td>{$v['content']}</td>
+                    <td>{date('Y-m-d H:i:s',$v['time'])}</td>
+					<td>
+                        <a href="{url('admin/alarm_info/one',array('id'=>$v['alarm_info_id']))}">修改</a></td>
+				</tr>
+				{/loop}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+                    <td><input type="button" value="删除" class="delAll" data-url="{url('admin/alarm_info/del')}"></td>
+
+                    <td colspan="3">
+                        <select class="pid">
+                            {loop $types $k=>$v}
+                            {if $v['pid']==0}
+                            <option value="{$v['id']}" {if $data['pid']==$v['id']}selected{/if}>{$v['name']}</option>
+                            {/if}
+                            {/loop}
+                        </select>
+                        <input type="hidden" name="pid" class="in_pid" value="{$data['pid']}"/>
+                        {loop $types $k=>$v}
+                            {if $v['pid']==0}
+                            <select class="type_id type{$v['id']}" {if $v['id']<>$data['pid'] }style="display:none;"{/if}>
+                                <option value="">-选择-</option>
+                                {loop $types $kk=>$vv}
+                                {if $v['id']==$vv['pid']}
+                                <option value="{$vv['id']}" {if $vv['id']==$data['type_id'] }selected{/if}>{$vv['name']}</option>
+                                {/if}
+                                {/loop}
+                            </select>
+                            {/if}
+                        {/loop}
+                        <input type="hidden" name="type_id" class="in_type_id" value="{$data['type_id']}"/>
+                        <input type="button" class="setAll" data-url="{url('admin/alarm_info/set')}" value="批量分类"/></td>
+
+                    <!--<td><input type="button" value="禁用" class="hideAll" data-url="{url('admin/alarm_info/set',array('status'=>0))}">-->
+                        <!--<input type="button" value="启用" class="showAll" data-url="{url('admin/alarm_info/set',array('status'=>1))}"></td>-->
+                    <td colspan="3">{$data['pagelist']}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<script>
+    $(function() {
+        $('.chkAll').on('click',function() {
+            $(':checkbox').not(':last').attr('checked', this.checked);
+        });
+
+        $('.pid').on('change',function(){
+            var pid = $(this).val();
+            $('.type'+pid).show().siblings('select:gt(0)').hide();
+        });
+        $('.pid').on('change',function(){
+            $('.in_pid').val($(this).val());
+        });
+        $('.type_id').on('change',function(){
+            $('.in_type_id').val($(this).val());
+        });
+        //批量分类
+        $('.setAll').on('click',function(){
+            var chk = [],k= 0,pid =$('.in_pid').val(),type_id=$('.in_type_id').val() ;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'ids':chk.join(','),'pid':pid,'type_id':type_id},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+        //批量删除
+        $('.delAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+        //批量隐藏
+        $('.hideAll').on('click',function(){
+            var chk = Array();
+            $(':checked').not('.chkAll').each(function(i,e){
+                chk[i] = $(e).attr('value');
+            });
+            chk.shift();
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+        //批量显示
+        $('.showAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>

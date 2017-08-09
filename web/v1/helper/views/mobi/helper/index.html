@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>趣宝宝</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/style.css">
+</head>
+
+<body>
+<!--<header>
+    <div class="uselist-font"><span>助手</span></div>
+</header>-->
+<section class="helper-top">
+    {if ($flag == 1) && ($week >= 1 && $week <= 52) }
+    <a href="javascript:;"><img src="{MOBI_PATH}/public/images/min/helper_bg.jpg"></a>
+    <div><a href="#" onclick="setClick('keyPoints','本周关注要点','{$week}')"><p>第<span>{$week}</span>周关注要点</p></a></div>
+    {/if}
+</section>
+
+
+<section>
+    <div class="helper-container">
+        <div class="helper-tit">
+            <h4>知识</h4>
+        </div>
+        <div class="helper-con helper-1">
+            <ul>
+                <!-- {url('mobi/helper/list',array('type_id'=>1 ))} -->
+                {loop $tagsTypeData $k=>$v}
+                    <li class="col-xs-3"><a href="{url('mobi/helper/list',array('type_id'=>$k))}" data-title="{$v}专题"><div class="helper-1-{php echo ++$ii;}"></div>{$v}</a></li>
+                {/loop}
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="helper-container">
+        <div class="helper-tit">
+            <h4>服务</h4>
+        </div>
+        <div class="helper-con helper-2">
+            <ul>
+                <!--<li class="col-xs-3"><a href="javascript:;" onclick="setClick('expert','专家专栏','')"><div class="helper-2-1"></div>专家专栏</a></li>-->
+                <li class="col-xs-3"><a href="javascript:;" onclick="setClick('tryout','试用','')"><div class="helper-2-2"></div>试用</a></li>
+                <!--https://dev.bbc.qiwocloud1.com/bbc_tryout/v1/view/trymain?uid=10000099&token=11114d5&deviceType=2-->
+                <!--<li class="col-xs-3"><a href="javascript:;" onclick="setClick('shopping','商城','')"><div class="helper-2-3"></div>商城</a></li>
+                <li class="col-xs-3"><a href="javascript:;" onclick="setClick('insurance','保险','')"><div class="helper-2-4"></div>保险</a></li>
+                <li class="col-xs-3"><a href="javascript:;" onclick="setClick('familyTrip','亲子游','')"><div class="helper-2-5"></div>亲子游</a></li>-->
+                <li class="col-xs-3"><a href="javascript:;" onclick="setClick('numerology','命理','')"><div class="helper-2-6"></div>命理</a></li>
+                <!--http://dev.qbb.qiwocloud1.com/v1/helper/api.php?c=helper&a=getConstellation&bloodtype=AB&birthday=2015-3-23-->
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="helper-container">
+        <div class="helper-tit">
+            <h4>工具</h4>
+        </div>
+        <div class="helper-con helper-3">
+            <ul>
+                <li class="col-xs-3"><a href="javascript:;" class="supply" onclick="setClick('supply','','{url("mobi/supply/index")}')" data-title="用品清单"><div class="helper-3-1"></div>用品清单</a></li>
+                <!---->
+                <li class="col-xs-3"><a href="javascript:;" onclick="setClick('vaccine','疫苗体检','')"><div class="helper-3-2"></div>疫苗体检</a></li>
+                <!---->
+                <li data-month="{$month}" class="col-xs-3"><a href="javascript:;" onclick="setClick('recipe','辅食食谱','')"><div class="helper-3-3"></div>辅食食谱</a></li>
+                <!--http://dev.qbb.qiwocloud1.com/v1/helper/api.php?c=helper&a=getlist&catid=22&content_switch=1&month=12-->
+                <!--<li class="col-xs-3">{if $bind_air_cleaner }<a href="javascript:;" onclick="setClick('purifier','空气净化器','')">{else}<a href="#" class="purifier">{/if}<div class="helper-3-4"></div>空气净化器</a></li>-->
+                <li class="col-xs-3">{if $bind_air_cleaner }<a href="javascript:;" onclick="setClick('purifier','空气净化器','')">{else}<a href="javascript:;" class="purifier" >{/if}<div class="helper-3-4"></div>空气净化器</a></li>
+                <!---->
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+</section>
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/main.js"></script>
+<script>
+    
+    var thisurl = window.location.href;
+    if (thisurl.indexOf('dev.') > -1) {
+        var domain = 'http://dev.www.qbb.qiwocloud1.com/';
+    } else if (thisurl.indexOf('test.') > -1) {
+        var domain = 'http://test.www.qbb.qiwocloud1.com/';
+    } else {
+        var domain = 'http://www.qbb.net/';
+    }
+    var url = domain +  'wap/airCleaner-App.html?';
+   
+    
+    $(function(){
+        if($('.col-xs-3').data('month')<5){
+            $('.col-xs-3').hide();
+        }
+        setEvent('.helper-1');   
+        
+        $(".purifier").click(function () { setClick('href','空气净化器',url);});
+    })
+</script>
+</body>
+</html>

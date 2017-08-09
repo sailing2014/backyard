@@ -1,0 +1,168 @@
+<!doctype html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Cache-Control" content="max-age=0" />
+<meta name="MobileOptimized" content="240" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+<title>育儿知识</title>
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/common.css" type="text/css" />
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/style.css" type="text/css" />
+</head>
+<body>
+    <!--头部文字-->
+<div class="searchTop">
+<a class="leftarrow" href="http://htmlQuit"><img src="{MOBI_PATH}/public/images/searcharrow.png" width="10" height="17" alt=""/></a>
+<h1>育儿知识</h1>
+<a class="rightsearch" href="{url('mobi2/search/index')}"><img src="{MOBI_PATH}/public/images/saerch.png" width="15" height="17" alt=""/></a>
+</div>
+<!--头部文字-->
+<div class="mainCon" id="TabBox">
+  <!--头部-->
+  <div class="CareTab hd">
+      <input type="hidden" name="tagsType-data" id="tagsType-data" value={json_encode($tagsType["data"])} />
+      <ul>
+          {loop $tagsType["data"]  $index=>$v}
+          <li><a href="javascript:;" onclick="setList({$v['id']},{$index})">{$v["name"]}</a></li>         
+          {/loop}
+      </ul>
+  </div>
+  
+  <!--头部-->
+  <!--内容部分-->
+  <div class="careCon bd">
+  
+    <div id="supply0" class="careList mixlist" tips=1>
+    <ul>
+        {if $data["count"]}
+        {loop $data["data"] $v}       
+    <li class="clearfix">
+        <a href="{url('mobi2/supply/getContent',array('id'=>$v['id'],'type_id'=>($tagsType['data'][0]['id'])))}">
+        <div class="leftPic"><img src={if $v['thumb'] }"{$v['thumb']}"{else}"{MOBI_PATH}/public/images/avatar.jpg"{/if} width="100" height="75" alt=""/></div>
+        <div class="rightTxt">
+        <p class="p1">{if mb_strlen($v["title"],'utf-8')>10}{mb_substr($v["title"],0,10,'utf-8')}...{else if ($v["title"]) }{$v["title"]}{else}小编在挑选更适合的标题~{/if}</p>
+        <p class="p2">{if mb_strlen($v["description"],'utf-8') > 17}{mb_substr($v["description"],0,17,'utf-8')}...{else if ($v["description"])}{$v["description"]}{else}小编还没录描述哦~{/if}</p>
+        <p class="p3">
+            {loop $v["tag"] $i=>$k}
+            {if ($i < 2) }            
+            <span>{if $k}{$k}{else}趣宝宝{/if}</span>
+            {/if }
+         {/loop}
+        </p>
+        </div>
+        </a>
+    </li>   
+      {/loop}
+    {else}
+    <li>"小编很懒，什么都没留下..."</li>
+    {/if}
+    </ul>
+    </div>
+
+      
+  </div>
+  <!--内容部分-->
+</div>
+<script src="{MOBI_PATH}/public/js/jquery-1.8.3.min.js"></script>
+<script src="{MOBI_PATH}/public/js/TouchSlide.1.1.js"></script>
+<script src="{MOBI_PATH}/public/js/refresh.js"></script>
+<script type="text/javascript">  
+    var tagsTypeData = $('#tagsType-data').val();
+    tagsTypeData = eval(tagsTypeData);
+    var count = {$tagsType["count"]}; 
+    var loading = "";
+    for(var i= 1; i<count;i++){
+//        loading +='<div id="supply'+(i)+'" class="careList mixlist" tips=0><ul><li>loading...</li></ul></div>';
+        loading +='<div id="supply'+(i)+'" class="careList mixlist" tips=0>\n\
+                                        <div class="searchingCon">\n\
+                                            <div class="searchingCircle"></div>\n\
+                                            <div class="searchingPic"><img src="{MOBI_PATH}/public/images/searchingpic1.jpg" width="30" height="25" alt=""/></div>\n\
+                                            <p class="searchingTxt">loading...</p>\n\
+                                        </div>\n\
+                  </div>';
+    }
+    $(".careCon").append(loading);
+    
+    TouchSlide({ 
+            slideCell:"#TabBox",
+            mailCell:".bd .careList",
+            defaultIndex: 0,          
+            endFun:function(i,c){ //切换结束时执行                   
+                      var BoxScrollLeft = 0; //定义导航的scrollLeft位置                    
+                            if(i>3){ //如果是第一个tab，则scrollLeft为0;                       
+                               for(var j=i; j>2; j--){
+                                BoxScrollLeft += $(".CareTab>ul>li").eq(j).width() + 36; //当前LI的宽度
+                               }
+                               if(BoxScrollLeft){
+                                    BoxScrollLeft -= 18;
+                                }
+                            }
+                    $(".hd").animate({'scrollLeft':BoxScrollLeft+"px"});
+
+                    //这里Ajax调用 
+                    //传入的i值为导航栏索引值
+                    //传入的c值为导航个数         
+                    if(i){
+                        setList(tagsTypeData[i]["id"],i);           
+                    }
+            }
+         });
+         
+function setList(id,index){
+    $('html,body').animate({scrollTop: 0}, 1);
+   var tips = $("#supply"+index).attr("tips");
+   var content_html = "<ul>";  
+    if(tips == 0){
+          try{
+                $.ajaxSetup({
+                        error: function (x, e) {
+                               $("#supply"+index).html(refresh);
+                                return false;
+                        }
+                    });
+                $.getJSON("{url('mobi2/supply/getlistbytypeid')}",{type_id:id,page:1,size:10},function(data){          
+                        if( data["data"].length>0 ){
+                            for(var i=0; i< data["data"].length; i++){
+                                if(!data["data"][i]["thumb"]){
+                                    data["data"][i]["thumb"] = "{MOBI_PATH}/public/images/avatar.jpg";
+                                }   
+                                if(data["data"][i]["title"].length > 10){
+                                    data["data"][i]["title"] = data["data"][i]["title"].substr(0,10) + "...";
+                                } 
+                                if(data["data"][i]["description"].length > 17){
+                                    data["data"][i]["description"] = data["data"][i]["description"].substr(0,17) + "...";
+                                }                        
+                                 content_html += '<li class="clearfix"><a href="'+"{url('mobi2/supply/getContent')}"+'&id='+data["data"][i]["id"]+'&type_id='+id+'"><div class="leftPic">\n\
+                                                 <img src="'+ data["data"][i]["thumb"]+'" width="100" height="75" \n\
+                                                 alt="'+ data["data"][i]["title"] +'"/></div><div class="rightTxt">\n\
+                                                 <p class="p1">'+ data["data"][i]["title"] + '</p><p class="p2">' + 
+                                                 data["data"][i]["description"] + '</p><p class="p3">';
+                                 if(data["data"][i]["tag"].length >0 ){        
+                                     var tag_arr = data["data"][i]["tag"];
+                                     for (var k=0; k < tag_arr.length && k < 2; k++){
+                                         if(!tag_arr[k] && k==0){
+                                             tag_arr[k] = '趣宝宝';
+                                         }
+                                         content_html += '<span>' + tag_arr[k] + '</span>';
+                                     }
+                                 }
+                                 content_html += '</p></div></a></li>';                                    
+                            }
+                        }else{
+                            content_html += '<li>"小编很懒，什么都没留下..."</li>'
+                        }
+
+                        content_html += "</ul>";
+                        $("#supply"+index).html(content_html);
+                });
+        
+                $("#supply"+index).attr("tips", 1);
+            }catch (ex) {
+                $("#supply"+index).html(refresh);
+            }
+    }
+ }
+</script>
+</body>
+</html>

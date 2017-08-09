@@ -1,0 +1,81 @@
+<!doctype html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Cache-Control" content="max-age=0" />
+    <meta name="MobileOptimized" content="240" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+    <title>{$title}</title>
+    <link rel="stylesheet"  href="{MOBI_PATH}/public/css/common.css" type="text/css" />
+    <link rel="stylesheet"  href="{MOBI_PATH}/public/css/style.css" type="text/css" />
+</head>
+<body>
+    <!--头部搜索框-->
+<div class="searchTop">
+    <a class="leftarrow" href="#" onclick="javascript:history.back(-1);return false;"><img src="{MOBI_PATH}/public/images/searcharrow.png" width="10" height="17" alt=""/></a>
+<div class="iptbox">
+  <input type="text" class="ipt" placeholder="{$key}">
+</div>
+<a class="rightsearch" href="#"><img src="{MOBI_PATH}/public/images/saerch.png" width="15" height="17" alt=""/></a>
+</div>
+<!--头部搜索框-->
+
+    <div class="mainCon" id="TabBox">  
+        <!--内容部分-->
+        <div class="careCon mt44 bd">
+
+            <div class="careList">
+                {if $data}
+                        <ul>
+                            {loop $data $v}
+                            <li class="clearfix">
+                                {if isset($v["type_id"]) }
+                                <a href="{url('mobi2/supply/getContent')}&id={$v['id']}&type_id={$v['type_id']}">
+                                {else}
+                                <a href="{url('mobi2/recipe/getContent')}&id={$v['id']}&type={$v['type']}&index={$v['index']}">
+                                 {/if}
+                                <div class="leftPic"><img src={if $v['thumb'] }"{$v['thumb']}"{else}"{MOBI_PATH}/public/images/avatar.jpg"{/if}  width="100" height="75" alt=""/></div>
+                                <div class="rightTxt">
+                                    <p class="p1">{if mb_strlen($v["title"],'utf-8')>10}{mb_substr($v["title"],0,10,'utf-8')}...{else if ($v["title"])}{$v["title"]}{else}小编在挑选更适合的标题~{/if}</p>
+                                    <p class="p2">{if mb_strlen($v["description"],'utf-8') > 17}{mb_substr($v["description"],0,17,'utf-8')}...{else if ($v["description"])}{$v["description"]}{else}小编还没录描述哦~{/if}</p>
+                                    {if isset($v["type_id"]) && $v["tag"]}
+                                    <p class="p3">
+                                        {loop $v["tag"]  $k=>$tag}
+                                            {if $k <2}                                    
+                                            <span>{if $tag}{$tag}{else}趣宝宝{/if}</span>
+                                            {/if}
+                                        {/loop}
+                                    </p>
+                                    {/if}
+                                </div>
+                                </a>
+                            </li>   
+                            {/loop}
+                        </ul>
+                {else}
+                <div class="searchingCon">
+                    <div><img src="{MOBI_PATH}/public/images/searchingpic4.jpg" width="54" height="54" alt=""/></div>
+                    <p class="searchingTxt1">没有搜到此类文章哦，换个关键词试试？</p>
+                </div>
+                {/if}
+            </div>  
+            
+        </div>
+
+
+    </div>
+<script src="{MOBI_PATH}/public/js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+$(".rightsearch").click(function(){
+    var key = $(".ipt").val();
+    $.getJSON('{url('mobi2/search/addKey')}&key='+key,function(data){
+    });
+    if(key){        
+        window.location.href= "{url('mobi2/search/getListbyKey')}&key="+key;
+    }
+    
+});      
+</script>
+</body>
+</html>

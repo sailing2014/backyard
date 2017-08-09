@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>积分规则</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="public/css/bootstrap.min.css">
+<link rel="stylesheet" href="public/css/rules.css">
+</head>
+
+<body>
+<section>
+    <div class="scoreRules-container">
+        <ul>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+</section>
+<div class="bgwihte"></div>
+<script src="public/js/jquery.min.js"></script>
+<script>
+var scoreRules = localStorage.getItem('scoreRules');
+if (!scoreRules) {
+    getNewData();
+} else {
+    var rows = JSON.parse(scoreRules);
+    setHtml(rows);
+    getNewData();
+}
+
+function getNewData () {
+    $.post("getScore.php", function (data) {
+        var arr = JSON.parse(data);
+        if (arr['_status']['_code'] == 200) {
+            var rows = arr['data'];
+            setHtml(rows);
+            localStorage.setItem('scoreRules', JSON.stringify(rows)); // 本地存储
+        } else {
+            getNewData();
+        }
+    });
+}
+
+function setHtml(rows) {
+    var html = "";
+    if (rows['total_rows'] > 0) {
+        var obj = rows['rows'];
+        for (var i = 0; i < rows['total_rows']; i++) {
+            html += '<li>' + obj[i]['value']['name'] + '<span>+' + obj[i]['value']['count'] + '</span></li>';
+            $('.scoreRules-container ul').html(html);
+            $('.bgwihte').remove();
+        }
+    }
+}
+</script>
+</body>
+</html>

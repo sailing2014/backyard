@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>用品清单</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/uselist.css">
+</head>
+
+<body>
+
+<!--<header>
+    <a href="{url('mobi/helper/index')}"><i class="glyphicon glyphicon-menu-left"></i></a>
+    <div class="uselist-font"><span><font>用品清单</font><i class="glyphicon glyphicon-triangle-bottom"></i></span></div>
+    <div class="uselist-action">
+        <a href="{url('mobi/supply/mine')}" class="myuselist" data-title="我的清单">我的清单</a><sup>{$pick_count}</sup>
+    </div>
+</header>-->
+
+<section class="drop-cate text-center">
+    <div class="filter"></div>
+    <ul>
+        {loop $months $v}
+            <li data-start ="{$v['start']}"  data-close ="{$v['close']}" ><a href="javascript:;">{$v['title']}</a></li>
+        {/loop}
+    </ul>
+</section>
+<section class="section1" data-start="{$month['start']}" data-close="{$month['close']}">
+	<h3>必备清单</h3>
+
+    {loop $types $type}
+        <div class="list">
+            <dl>
+                <dt class="color">{$type['catname']}</dt>
+                {loop $type['child'] $child}
+                <dd><a data-id="{$child['catid']}" data-start="{$child['start']}" data-close="{$child['close']}" href="#" >{$child['catname']}</a></dd>
+                {/loop}
+            </dl>
+            {if count($type['child']) > 4 }
+            <div class="clearfix"></div>
+            <div class="list-more"><a href="javascript:;">更多…</a></div>
+            {/if}
+        </div>
+    {/loop}
+
+</section>
+<section class="line"></section>
+<!--默认加载宝宝当前月龄推荐专题，否则根据选择月龄范围检索专题-->
+<section class="section2">
+	<h3>小趣推荐<a href="{url('mobi/topic/list')}" class="pull-right xqtj" data-title="专题列表">更多 ></a></h3>
+    <div class="hotTopic" data-title="用品专题" data-url="{url('mobi/supply/topic')}">
+    {loop $topic_list $v}
+	    <a href="{url('mobi/topic/view',array('id'=>$v['id']))}"  data-title="{$v['title']}"><img src="{$v['thumb']}"><span>{$v['title']}</span></a>
+    {/loop}
+    </div>
+</section>
+
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/uselist.js"></script>
+<script src="{MOBI_PATH}/public/js/main.js"></script>
+<script>
+
+//    $('body').append(location.href);
+    var xqtj_href = "{url('mobi/topic/list')}";    
+    $(function(){
+        $('.xqtj').attr('href', xqtj_href + '&start={$start}&close={$close}');
+        
+        var m_start,m_close,link="{url('mobi/supply/list')}";
+        $('.drop-cate  li').on('click',function(){
+            var self = $(this);
+            self.addClass('active').siblings().removeClass('active');
+            filter();
+            $('.uselist-font font').text(self.text());
+            $('.drop-cate').hide();
+        });
+        $('.section1 dd a').click(function(){
+            var self = $(this),
+//                    mine = $('.drop-cate .active');
+                    mine = $('.section1');
+            href = link+"&type_id="+self.data('id')+"&start="+mine.data('start')+"&close="+mine.data('close');
+//            console.log(self.text());
+            setClick('href',self.text(),href);
+        });
+
+        setEvent('.uselist-action,.section2 h3, .hotTopic');
+
+    });
+    function filter(){
+        var month = $('.drop-cate .active');
+            m_start = month.data('start');
+            m_close = month.data('close');
+            $('.xqtj').attr('href', xqtj_href + '&start=' + m_start + '&close=' + m_close);
+        $('.section1 dd a').each(function(idx,ele){
+            var e_start = $(ele).data('start'),
+                    e_close = $(ele).data('close');
+            if( m_start > e_close || m_close < e_start){
+                $(ele).parent("dd").hide();
+            }else{
+                $(ele).parent("dd").show();
+            }
+        });
+        var hot_url = $('.hotTopic').data('url');
+        $.getJSON(hot_url,{'start':m_start,'close':m_close},function(json){
+            if(json.code){
+                var list =json['data'].data;
+//                console.log(list);
+                var html ="";
+                for(var i =0;i<list.length;i++){
+                    html += '<a href="?s=mobi&c=topic&a=view&id='+list[i].id+'"><img src="'+list[i].thumb+'"><span>'+list[i].title+'</span></a>';
+                }
+                $('.hotTopic').html(html);
+            }else{
+                showNotice('加载失败');
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

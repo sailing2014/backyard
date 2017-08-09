@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+<div class="subnav">
+    <div class="content-menu ib-a blue line-x">
+        <a href="{url('admin/tags_type/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+        {if admin_auth($userinfo['roleid'], 'tags_type-add')}<a href="{url('admin/tags_type/one')}"><em>{lang('a-add')}</em></a><span>|</span>{/if}
+    </div>
+    <div class="bk10"></div>
+    <div class="explain-col">
+        <form action="" method="get">
+            <input type="hidden" name="s" value="admin">
+            <input type="hidden" name="c" value="tags_type">
+            <input type="hidden" name="a" value="index">
+            <select name="type">
+                <option value="">类型</option>
+                {loop $status $k=>$v}
+                <option value="{$k}" {if is_numeric($map['type']) && $k==$map['type']}selected="selected"{/if}>{$v}</option>
+                {/loop}
+            </select>
+            <input type="submit" value="查询">
+        </form>
+    </div>
+</div>
+
+<div class="table-list">
+    <table width="100%">
+        <thead>
+        <tr>
+            <th width="40"></th>
+            <th width="80">ID</th>
+            <th>名称</th>
+            <th>排序</th>
+            <th>状态</th>
+            <th width="100">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {loop $data['data'] $v}
+        <tr>
+            <td><input type="checkbox" name="id[]" value="{$v['id']}"></td>
+            <td>{$v['id']}</td>
+            <td>{$v['name']}</td>
+            <td>{$v['rank']}</td>
+            <td>{$status[$v['status']]}</td>
+            <td><a href="{url('admin/tags_type/one',array('id'=>$v['id']))}">修改</a></td>
+        </tr>
+        {/loop}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+            <td><input type="button" value="删除" class="delAll" data-url="{url('admin/tags_type/del')}"></td>
+            <td><input type="button" value="禁用" class="hideAll" data-url="{url('admin/tags_type/set',array('status'=>0))}">
+                <input type="button" value="启用" class="showAll" data-url="{url('admin/tags_type/set',array('status'=>1))}">
+                <input type="button" value="清除缓存" class="clrAll" data-url="{url('admin/tags_type/clr')}">
+            </td>
+            <td colspan="3">{$data['pagelist']}</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+    $(function() {
+        $('.chkAll').on('click',function() {
+            $(':checkbox').not(':last').attr('checked', this.checked);
+        });
+        $('.delAll,.hideAll,.showAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+
+        $('.clrAll').click(function(){
+            $.getJSON($(this).data('url'),function(json){
+                alert(json.info);
+            })
+        });
+
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+<div class="subnav">
+    <div class="content-menu ib-a blue line-x">
+        <a href="{url('try/apply/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+        {if admin_auth($userinfo['roleid'], 'apply-add')}<a href="{url('try/apply/one')}"><em>{lang('a-add')}</em></a><span>|</span>{/if}<span>|</span>
+    </div>
+    <div class="bk10"></div>
+    <div class="explain-col">
+        <form action="" method="get">
+            <input type="hidden" name="s" value="try">
+            <input type="hidden" name="c" value="apply">
+            <input type="hidden" name="a" value="index">
+            <input type="text" name="apply" class="input-text" placeholder="商品" value="{$past['apply']}">
+            <input type="submit" value="查询">
+        </form>
+    </div>
+</div>
+
+<div class="table-list">
+    <table width="100%">
+        <thead>
+        <tr>
+            <th width="40"></th>
+            <th>活动</th>
+            <th>商品</th>
+            <th>用户</th>
+            <th>收件人</th>
+            <th>手机</th>
+            <th>地址</th>
+            <th>邮编</th>
+            <th>状态</th>
+            <th width="100">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {loop $data['_data']['rows'] $v}
+        <tr>
+            <td><input type="checkbox" name="id[]" value="{$v['tryOutId']}"></td>
+            <td><a href="{url('try/activity/one',array('id'=>$v['tryOutDetailId']))}">{$activity[$v['tryOutDetailId']]['activeName']}</a></td>
+            <td><a href="{url('try/item/one',array('id'=>$v['productId']))}">{$product[$v['productId']]['productName']}</a></td>
+            <td><a href="{url('try/proposer/one',array('uid'=>$v['uid']))}">{$v['uid']}</a></td>
+            <td><a href="{url('try/proposer/one',array('uid'=>$v['uid']))}">{$v['applyName']}</a></td>
+            <td>{$v['mobile']}</td>
+            <td>[{$v['area']}]<br/>{$v['desarea']}</td>
+            <td>{$v['areacode']}</td>
+            <td>{$statusList[$v['status']]}</td>
+            <td><a href="{url('try/apply/one',array('id'=>$v['tryOutId']))}">查看</a></td>
+        </tr>
+        {/loop}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+            <td><input type="button" value="删除" class="delAll" data-url="{url('try/apply/del')}">
+                <input type="button" value="成功" class="hideAll" data-url="{url('try/apply/set',array('status'=>2))}">
+                <input type="button" value="失败" class="showAll" data-url="{url('try/apply/set',array('status'=>3))}">
+            </td>
+            <td colspan="8">{$data['pagelist']}</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+    $(function() {
+        //批量选择
+        $('.chkAll').on('click',function() {
+            $(':checkbox').not(':last').attr('checked', this.checked);
+        });
+        //批量设置
+        $('.delAll,.hideAll,.showAll').on('click',function(){
+            var chk = [],tmp,chks,k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                tmp = $(e).attr('value');
+                if(tmp != null && tmp !='' && tmp != undefined ) {
+                    chk[k] = tmp;
+                    k++;
+                }
+            });
+            if(chk.length>1){
+                chks = chk.join(',');
+            }else{
+                chks =chk[0];
+            }
+//            console.log(chks);
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+
+    })
+</script>
+</body>
+</html>

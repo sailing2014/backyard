@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/v1/helper/extensions/calendar/jscal2.css">
+    <link rel="stylesheet" type="text/css" href="/v1/helper/extensions/calendar/border-radius.css">
+    <link rel="stylesheet" type="text/css" href="/v1/helper/extensions/calendar/win2k.css">
+    <script src="/v1/helper/extensions/calendar/calendar.js" type="text/javascript"></script>
+    <script src="/v1/helper/extensions/language/zh-cn/calendar.js" type="text/javascript"></script>
+    <script src="/v1/helper/views/admin/js/jquery-ui.min.js" type="text/javascript"></script>
+
+</head>
+<body>
+	<div class="subnav">
+		<div class="content-menu ib-a blue line-x">
+			<a href="{url('admin/client/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+            {if admin_auth($userinfo['roleid'], 'client-add')}<a href="{url('admin/client/one')}"><em>{lang('a-add')}</em></a><span>|</span>{/if}
+
+		</div>
+		<div class="bk10"></div>
+		<div class="explain-col">
+            <form action="" method="get">
+                <input type="hidden" name="s" value="admin">
+                <input type="hidden" name="c" value="client">
+                <input type="hidden" name="a" value="index">
+                <input type="text" name="uids" class="input-text" value="{$map['uids']}" placeholder="用户ID">
+                <input type="submit" value="查询">
+            </form>
+
+            <form action="" method="get">
+                <input type="hidden" name="s" value="admin">
+                <input type="hidden" name="c" value="client">
+                <input type="hidden" name="a" value="index">
+                <!--<input type="text" name="nickname" class="input-text" value="{$map['nickname']}" placeholder="用户昵称">-->
+                <input type="text" name="name" class="input-text" value="{$map['name']}" placeholder="手机号码">
+                <input type="submit" value="查询">
+            </form>
+
+            <form action="" method="get">
+                <input type="hidden" name="s" value="admin">
+                <input type="hidden" name="c" value="client">
+                <input type="hidden" name="a" value="index">
+                <input id="start_time" type="text" name="start" class="input-text date" size="24" value="{if $map['start']} {date('Y-m-d H:i:s',$map['start'])} {/if}" placeholder="开始时间"/>
+                <input id="end_time" type="text" name="end" class="input-text date" size="24" value="{if $map['end']} {date('Y-m-d H:i:s',$map['end'])} {/if}" placeholder="结束时间"/>
+                <select name="status" id="">
+                    <!-- <option value="">状态</option> -->
+                    {loop $statuslist $k=>$v}
+                    <option value="{$k}" {if $map['status']!='' and $k == $map['status']}selected{/if}>{$v}</option>
+                    {/loop}
+                </select>
+                <input type="submit" value="查询">
+                <span class="onShow">暂不支持模糊查询</span>
+            </form>
+
+		</div>
+	</div>
+	
+	<div class="table-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th></th>
+					<th>用户ID</th>
+					<th>用户昵称</th>
+                    <th>手机号</th>
+                    <th>状态</th>
+					<th>是否被邀请加入</th>
+                    <th>注册时间</th>
+                    <!--<th>操作</th>-->
+				</tr>				
+			</thead>
+			<tbody>
+				{loop $data $v}
+				<tr>
+                    <td><input type="checkbox" name="id[]" value="{$v['uid']}"></td>
+                    <td>{$v['uid']}</td>
+					<td>{$v['nickname']}</td>
+					<td>{$v['phone']}</td>
+                    <td>{if $v['status']}正常{else}屏蔽{/if}</td>
+                    <td></td>
+                    <td>{date('Y-m-d H:i',$v['reg_time'])}</td>
+                    <!--<td><a href="{url('admin/client/one',array('id'=>$v['id']))}">查看</a></td>-->
+				</tr>
+				{/loop}
+			</tbody>
+            <tfoot>
+            <tr>
+                <td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+                <td>
+                    <!--<input type="button" value="删除" class="delAll" data-url="{url('admin/client/del')}">-->
+                </td>
+                <td colspan="5">{$pagelist}</td>
+            </tr>
+            </tfoot>
+		</table>
+	</div>
+    <script>
+        Calendar.setup({
+            weekNumbers : true,
+            inputField  : "start_time",
+            trigger     : "start_time",
+            dateFormat  : "%Y-%m-%d %H:%M:%S",
+            showTime    : true,
+            minuteStep  : 1,
+            onSelect    : function() {
+                this.hide();
+//                var time = $("#start_time").val();
+//                var date = (new Date(Date.parse(time.replace(/-/g,"/")))).getTime() / 1000;
+//                $("#start_time").val(date);
+            }
+        });
+        Calendar.setup({
+            weekNumbers : true,
+            inputField  : "end_time",
+            trigger     : "end_time",
+            dateFormat  : "%Y-%m-%d %H:%M:%S",
+            showTime    : true,
+            minuteStep  : 1,
+            onSelect    : function() {
+                this.hide();
+            }
+        });
+        $(function() {
+            $('.chkAll').on('click',function() {
+                $(':checkbox').not(':last').attr('checked', this.checked);
+            });
+            $('.delAll').on('click',function(){
+                var chk = [],k=0;
+                $(':checked').not('.chkAll').each(function(i,e){
+                    if($(e).attr('value') > 0){
+                        chk[k] = $(e).attr('value');
+                        k++;
+                    }
+                });
+                $.getJSON($(this).data('url'),{'id':chk.join(',')},function(json){
+                    alert(json.info);
+                    if(json.code){
+                        location.href='';
+                    }
+                })
+            });
+        })
+    </script>
+</body>
+</html>

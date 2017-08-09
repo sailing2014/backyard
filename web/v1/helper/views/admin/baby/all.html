@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+	<div class="subnav">
+		<div class="content-menu ib-a blue line-x">
+			<a href="{url('admin/baby/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+
+		</div>
+		<div class="bk10"></div>
+		<div class="explain-col">
+            <form action="" method="get">
+                <input type="hidden" name="s" value="admin">
+                <input type="hidden" name="c" value="baby">
+                <input type="hidden" name="a" value="index">
+                <input type="text" name="uid" class="input-text" value="{$map['uid']}" placeholder="用户ID">
+                <input type="text" name="baby_id" class="input-text" value="{$map['entity_id']}" placeholder="宝宝ID">
+
+                <input type="submit" value="查询">
+            </form>
+		</div>
+	</div>
+	
+	<div class="table-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th></th>
+					<th>宝宝ID</th>
+					<th>宝宝昵称</th>
+					<th>生日</th>
+					<th>用户ID</th>
+					<th>添加时间</th>
+                    <th>是否绑定</th>
+                    <th>操作</th>
+				</tr>				
+			</thead>
+			<tbody>
+				{loop $data['user'] $v}
+				<tr>
+                    <td><input type="checkbox" name="id[]" value="{$v['id']}"></td>
+					<td>{$v['id']}</td>
+					<td>{$v['name']}</td>
+					<td>{$v['birthday']}</td>
+					<td>{$v['uid']}</td>
+					<td>{$v['created_at']}</td>
+                    <td>{if $devices['entityid_'.$v['id']]}是{else}否{/if}</td>
+                    <td><a href="{url('admin/baby/one',array('id'=>$v['id']))}">查看</a></td>
+				</tr>
+				{/loop}
+			</tbody>
+            <tfoot>
+            <tr>
+                <td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+                <td><!--<input type="button" value="删除" class="delAll" data-url="{url('admin/baby/del')}">--></td>
+                <td colspan="7">{$data['pagelist']}</td>
+            </tr>
+            </tfoot>
+		</table>
+	</div>
+    <script>
+        $(function() {
+            $('.chkAll').on('click',function() {
+                $(':checkbox').not(':last').attr('checked', this.checked);
+            });
+            $('.delAll').on('click',function(){
+                var chk = [],k=0;
+                $(':checked').not('.chkAll').each(function(i,e){
+                    if($(e).attr('value') > 0){
+                        chk[k] = $(e).attr('value');
+                        k++;
+                    }
+                });
+                $.getJSON($(this).data('url'),{'id':chk.join(',')},function(json){
+                    alert(json.info);
+                    if(json.code){
+                        location.href='';
+                    }
+                })
+            });
+        })
+    </script>
+</body>
+</html>

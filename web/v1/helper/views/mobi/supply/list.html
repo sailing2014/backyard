@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>用品专题</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/uselist.css">
+</head>
+
+<body>
+
+<!--<header>
+    <a href="javascript:window.history.go(-1)"><i class="glyphicon glyphicon-menu-left"></i></a>
+    <div class="uselist-font">{$type['catname']}</div>
+    <div class="uselist-action">
+        <a href="{url('mobi/supply/mine')}" class="myuselist">我的清单</a><sup>{$pick_count}</sup>
+    </div>
+</header>-->
+<section class="section3">
+    {if $content['content']}
+    <h3>{$type["catname"]}</h3>
+    {/if}
+    <div>
+        {htmlspecialchars_decode($content['content'])}
+    </div>
+</section>
+<section class="section-list">
+		<input type="hidden" name="userlist-list-pages" id="userlist-list-pages" value="1" />
+    <ul>
+        {loop $list['data'] $v}
+            <li>
+                <div>
+                    <a href="javascript:;" class="show-intro">
+                    <div class="list-img pull-left"><img src="{$v['thumb']}" onerror="this.src='{MOBI_PATH}/public/images/avatar.jpg'" /></div>
+                        <h4 class="pull-left">{$v['title']}</h4>
+                    </a>
+                    <!--<div class="pull-right"><a href="javascript:;" class="show-intro">品牌介绍</a><a data-id="{$v['id']}" data-pick="{$v['pick']}" href="javascript:;" class="add-list">{if $v['pick']}已添加{else}加入清单{/if}</a></div>-->
+                    <div class="pull-right"><a href="javascript:;" class="show-intro">品牌介绍</a></div>
+                    <div class="hidden intro">{htmlspecialchars_decode($v['content'])}</div>
+                </div>
+            </li>
+        {/loop}
+    </ul>
+</section>
+
+
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/uselist.js"></script>
+<script>
+
+$(function () {
+    //收藏用品
+    var url_pick = "{url('mobi/supply/pick')}";
+    $('.section-list').on('click','.add-list',function(){
+        var self = $(this);
+        if(self.data('pick')){
+            showNotice ("已添加");
+        }else{
+            $.getJSON(url_pick,{id:self.data('id')},function(json){
+                if(json.code==1){
+                    showNotice ("添加成功");
+                    self.html('已添加');
+                    var count = parseInt($('.uselist-action sup').text());
+                    $('.uselist-action sup').html(count+1);
+                }else if(json.code==-1){
+                    showNotice ("重复添加");
+                }else{
+                    showNotice ("添加失败");
+                }
+            });
+        }
+
+    });
+
+	// 滚到底部加载更多
+	loadpage (url, nowpagebox, showcontent, returnbox);
+});
+
+// 异步请求内容地址
+var url = "{url('mobi/supply/list',$param)}";
+var nowpagebox = '#userlist-list-pages';
+var returnbox = '.section-list ul';
+var showcontent = '';
+/*var showcontent = '<li>\
+            <div>\
+                <a href="javascript:;" class="show-intro">\
+                <div class="list-img pull-left"><img src="{MOBI_PATH}/public/images/img-test-4.jpg" /></div>\
+                <h4 class="pull-left">999宝宝乐奶粉荷兰进口450g</h4>\
+                </a>\
+                <div class="pull-right"><a href="javascript:;" class="show-intro">品牌介绍</a><a href="javascript:;" class="add-list">加入清单</a></div>\
+                <div class="hidden intro">999，鼓励全家一起分享宝宝点滴；</div>\
+            </div>\
+        </li>';*/
+// 分页方法
+function loadpage (url, nowpagebox, showcontent, returnbox, extendsfunction) {
+    // 滚到底部加载更多
+    var flag = 0;
+    $(window).scroll(function(){
+        if($(window).scrollTop() == $(document).height() - $(window).height()){
+            if (flag != 1) {
+                flag = 1;
+                loading();
+
+                //获得当前频道页数
+                var pages = Number($(nowpagebox).val()) + 1;
+
+                $.get(url,{page:pages},function(result){
+                    // 模拟result 有数据和无数据的结果
+                    if (result.data) {           // 判断是否为空
+                        var showcontent = "";
+                        var countsize = "";     // 数据条数
+                        var list = result.data;
+                        //console.log(list);
+                        for (var i=0; i < list.length; i++) {
+                            showcontent += '<li>\
+            <div>\
+                <a href="javascript:;" class="show-intro">\
+                <div class="list-img pull-left"><img src="'+list[i].thumb+'" /></div>\
+                <h4 class="pull-left">'+list[i].title+'</h4>\
+                </a>\
+                <div class="pull-right"><a href="javascript:;" class="show-intro">品牌介绍'+i+'</a><a href="javascript:;" data-id="'+list[i].id+'" data-pick="'+list[i].pick+'" class="add-list">加入清单</a></div>\
+                <div class="hidden intro">'+list[i].content+'</div>\
+            </div>\
+        </li>';
+                        }
+                        $("" + returnbox).append(showcontent);
+                        $(nowpagebox).val(pages);
+                        flag = 0;
+                    } else {
+                        flag = 1;
+                        if (extendsfunction == 1) {
+                            getcallback();
+                        }
+                    }
+                    $('.loading').remove();
+                });
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>

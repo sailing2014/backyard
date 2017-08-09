@@ -1,0 +1,7 @@
+Project = bbc_helper
+User_ID = 5016
+Type = httpd
+Version = beta1
+Owner = yf
+Email = yf@clever-rock.com
+SRW   = web/v1/helper;web/v1/helper/cache;web/v1/helper/models

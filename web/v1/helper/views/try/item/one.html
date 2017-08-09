@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/dialog.js"></script>
+    <script type="text/javascript" src="{LANG_PATH}lang.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/core.js"></script>
+    <script type="text/javascript" src="extensions/kindeditor/kindeditor.js"></script>
+    <script type="text/javascript" src="extensions/language/zh-cn/kindeditor.js"></script>
+    <link rel="stylesheet" href="extensions/kindeditor/themes/default/default.css"/>
+    <title>admin</title>
+</head>
+<body style="font-weight: normal;">
+<div class="subnav">
+    <div class="content-menu ib-a blue line-x">
+        <a href="{url('try/item/index')}"><em>{lang('a-list')}</em></a>
+        <span>|</span>
+        <a href="javascript:;" class="on"><em>{lang('a-edit')}</em></a>
+    </div>
+    <div class="bk10"></div>
+    <div class="table-list">
+        <form method="post" action="">
+            <table width="100%" class="table_form">
+                <tbody>
+                <tr>
+                    <th width="20%">商品ID：</th>
+                    <td>{$data['productId']}</td>
+                </tr>
+                <tr>
+                    <th>商品名称：</th>
+                    <td><input type="text" class="input-text" name="productName" value="{$data['productName']}"/></td>
+                </tr>
+                <tr>
+                    <th>申请年龄：</th>
+                    <td><input type="text" class="input-text" name="applyAge" value="{$data['applyAge']}"/></td>
+                </tr>
+                <tr>
+                    <th>市场价格：</th>
+                    <td><input type="text" class="input-text" name="price" value="{$data['price']}"/></td>
+                </tr>
+                <tr>
+                    <th>商品产地：</th>
+                    <td><input type="text" class="input-text" name="madeIn" value="{$data['madeIn']}"/></td>
+                </tr>
+                <tr>
+                    <th>主图：</th>
+                    <td>
+                        <div class="upload">
+                            <input class="ke-input-text input-text" type="text" size="50" name="productImg" id="productImg" value="{$data['productImg']}" />
+                            <input type="button" id="uploadButton1" value="上传"
+                                   data-url="{url('attachment/alioss_file',array('size'=>50,'type'=>urlencode(base64_encode('img,gif,jpg,jpeg') )))}" />
+                        </div>
+                        <div class="ke-dialog-loading-content hidden" >上传中，请稍候 ...</div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>附图1：</th>
+                    <td>
+                        <div class="upload">
+                            <input class="ke-input-text input-text" type="text" size="50" name="attachedImg[]" id="inp_attachedImg1" value="{$data['attachedImg'][0]}" />
+                            <input type="button" id="btn_attachedImg1" value="上传"
+                                   data-url="{url('attachment/alioss_file',array('size'=>50,'type'=>urlencode(base64_encode('img,gif,jpg,jpeg') )))}" />
+                        </div>
+                        <div class="ke-dialog-loading-content hidden" >上传中，请稍候 ...</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>附图2：</th>
+                    <td>
+                        <div class="upload">
+                            <input class="ke-input-text input-text" type="text" size="50" name="attachedImg[]" id="inp_attachedImg2" value="{$data['attachedImg'][1]}" />
+                            <input type="button" id="btn_attachedImg2" value="上传"
+                                   data-url="{url('attachment/alioss_file',array('size'=>50,'type'=>urlencode(base64_encode('img,gif,jpg,jpeg') )))}" />
+                        </div>
+                        <div class="ke-dialog-loading-content hidden" >上传中，请稍候 ...</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>附图3：</th>
+                    <td>
+                        <div class="upload">
+                            <input class="ke-input-text input-text" type="text" size="50" name="attachedImg[]" id="inp_attachedImg3" value="{$data['attachedImg'][2]}" />
+                            <input type="button" id="btn_attachedImg3" value="上传"
+                                   data-url="{url('attachment/alioss_file',array('size'=>50,'type'=>urlencode(base64_encode('img,gif,jpg,jpeg') )))}" />
+                        </div>
+                        <div class="ke-dialog-loading-content hidden" >上传中，请稍候 ...</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>附图4：</th>
+                    <td>
+                        <div class="upload">
+                            <input class="ke-input-text input-text" type="text" size="50" name="attachedImg[]" id="inp_attachedImg4" value="{$data['attachedImg'][3]}" />
+                            <input type="button" id="btn_attachedImg4" value="上传"
+                                   data-url="{url('attachment/alioss_file',array('size'=>50,'type'=>urlencode(base64_encode('img,gif,jpg,jpeg') )))}" />
+                        </div>
+                        <div class="ke-dialog-loading-content hidden" >上传中，请稍候 ...</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>附图5：</th>
+                    <td>
+                        <div class="upload">
+                            <input class="ke-input-text input-text" type="text" size="50" name="attachedImg[]" id="inp_attachedImg5" value="{$data['attachedImg'][4]}" />
+                            <input type="button" id="btn_attachedImg5" value="上传"
+                                   data-url="{url('attachment/alioss_file',array('size'=>50,'type'=>urlencode(base64_encode('img,gif,jpg,jpeg') )))}" />
+                        </div>
+                        <div class="ke-dialog-loading-content hidden" >上传中，请稍候 ...</div>
+                    </td>
+                </tr>
+
+
+
+                <tr>
+                    <th>商品状态：</th>
+                    <td>{loop $statusList $k=>$v}
+                        <label for=""><input type="radio" name="isDisplay" value="{$k}"  {if $data['isDisplay']==$k}checked{/if}/>{$v}</label>
+                    {/loop}</td>
+                </tr>
+                <tr>
+                    <th>添加时间：</th>
+                    <td>{date('Y-m-d H:i:s',$data['createTime'])}</td>
+                </tr>
+                <tr>
+                    <th>商品详情：</th>
+                    <td><textarea  name="productDes" id="productDes">{$data['productDes']}</textarea></td>
+                </tr>
+
+                <tr>
+                    <th></th>
+                    <td><input type="button" value="提交"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    KindEditor.ready(function(K) {
+        K.create('#productDes', {
+            allowFileManager : true,
+            langType : 'zh-cn',
+            items : [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat',  '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image',
+                'flash', 'media', 'table', 'hr', 'emoticons', 'baidumap', 'anchor', 'link', 'unlink' , '|', 'stitle', 'pagebreak','about'
+            ],
+            afterCreate : function() {
+                this.sync();
+            },
+            afterBlur:function(){
+                this.sync();
+            }
+        });
+        //主图
+        var url =  K('#uploadButton1').attr('data-url');
+        var uploadbutton1 = K.uploadbutton({
+            button : K('#uploadButton1')[0],
+            fieldName : 'file',
+            url : url,
+            afterUpload : function(data) {
+                if (data.error == 0) {
+                    var url = K.formatUrl(data.filename, 'absolute');
+                    K('#productImg').val(url);
+                    $('.ke-dialog-loading-content').hide();
+                } else {
+                    alert(data.result);
+                }
+            },
+            afterError : function(str) {
+                //console.log('错误信息: ' + str);
+            }
+        });
+        uploadbutton1.fileBox.change(function(e) {
+            $(this).parents('.upload').siblings('.ke-dialog-loading-content').show();
+            uploadbutton1.submit();
+        });
+        //附图1
+        var url1 =  K('#btn_attachedImg1').attr('data-url');
+        var attachedImg1 = K.uploadbutton({
+            button : K('#btn_attachedImg1')[0],
+            fieldName : 'file',
+            url : url1,
+            afterUpload : function(data) {
+                if (data.error == 0) {
+                    var url = K.formatUrl(data.filename, 'absolute');
+                    K('#inp_attachedImg1').val(url);
+                    K('.ke-dialog-loading-content').hide();
+                } else {
+                    alert(data.result);
+                }
+            },
+            afterError : function(str) {
+                //console.log('错误信息: ' + str);
+            }
+        });
+        attachedImg1.fileBox.change(function(e) {
+            $(this).parents('.upload').siblings('.ke-dialog-loading-content').show();
+            attachedImg1.submit();
+        });
+        //附图2
+        var url2 =  K('#btn_attachedImg2').attr('data-url');
+        var attachedImg2 = K.uploadbutton({
+            button : K('#btn_attachedImg2')[0],
+            fieldName : 'file',
+            url : url2,
+            afterUpload : function(data) {
+                if (data.error == 0) {
+                    var url = K.formatUrl(data.filename, 'absolute');
+                    K('#inp_attachedImg2').val(url);
+                    K('.ke-dialog-loading-content').hide();
+                } else {
+                    alert(data.result);
+                }
+            },
+            afterError : function(str) {
+                //console.log('错误信息: ' + str);
+            }
+        });
+        attachedImg2.fileBox.change(function(e) {
+            $(this).parents('.upload').siblings('.ke-dialog-loading-content').show();
+            attachedImg2.submit();
+        });
+        //附图3
+        var url3 =  K('#btn_attachedImg3').attr('data-url');
+        var attachedImg3 = K.uploadbutton({
+            button : K('#btn_attachedImg3')[0],
+            fieldName : 'file',
+            url : url3,
+            afterUpload : function(data) {
+                if (data.error == 0) {
+                    var url = K.formatUrl(data.filename, 'absolute');
+                    K('#inp_attachedImg3').val(url);
+                    K('.ke-dialog-loading-content').hide();
+                } else {
+                    alert(data.result);
+                }
+            },
+            afterError : function(str) {
+                //console.log('错误信息: ' + str);
+            }
+        });
+        attachedImg3.fileBox.change(function(e) {
+            $(this).parents('.upload').siblings('.ke-dialog-loading-content').show();
+            attachedImg3.submit();
+        });
+        //附图4
+        var url4 =  K('#btn_attachedImg4').attr('data-url');
+        var attachedImg4 = K.uploadbutton({
+            button : K('#btn_attachedImg4')[0],
+            fieldName : 'file',
+            url : url4,
+            afterUpload : function(data) {
+                if (data.error == 0) {
+                    var url = K.formatUrl(data.filename, 'absolute');
+                    K('#inp_attachedImg4').val(url);
+                    K('.ke-dialog-loading-content').hide();
+                } else {
+                    alert(data.result);
+                }
+            },
+            afterError : function(str) {
+                //console.log('错误信息: ' + str);
+            }
+        });
+        attachedImg4.fileBox.change(function(e) {
+            $(this).parents('.upload').siblings('.ke-dialog-loading-content').show();
+            attachedImg4.submit();
+        });
+        //附图5
+        var url5 =  K('#btn_attachedImg5').attr('data-url');
+        var attachedImg5 = K.uploadbutton({
+            button : K('#btn_attachedImg5')[0],
+            fieldName : 'file',
+            url : url5,
+            afterUpload : function(data) {
+                if (data.error == 0) {
+                    var url = K.formatUrl(data.filename, 'absolute');
+                    K('#inp_attachedImg5').val(url);
+                    K('.ke-dialog-loading-content').hide();
+                } else {
+                    alert(data.result);
+                }
+            },
+            afterError : function(str) {
+                //console.log('错误信息: ' + str);
+            }
+        });
+        attachedImg5.fileBox.change(function(e) {
+            $(this).parents('.upload').siblings('.ke-dialog-loading-content').show();
+            attachedImg5.submit();
+        });
+
+    });
+    //表单提交
+    $('form').submit(function(){return false;});
+    $(':button:last').on('click',function(){
+        var form = $(this).parents('form');
+        $.post(form.attr('action'),form.serialize(),function(json){
+            alert(json.info);
+            if(json.code){
+                history.go(-1);
+            }else{
+                location.href="";
+            }
+        },'json');
+    });
+</script>
+</body>
+</html>

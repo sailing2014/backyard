@@ -1,0 +1,136 @@
+<!doctype html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Cache-Control" content="max-age=0" />
+<meta name="MobileOptimized" content="240" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+<title>成长贴士</title>
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/common.css" type="text/css" />
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/style.css" type="text/css" />
+</head>
+<body>
+<div class="searchTop">
+<a class="leftarrow" href="http://htmlQuit"><img src="{MOBI_PATH}/public/images/searcharrow.png" width="10" height="17" alt=""/></a>
+<h1>成长贴士</h1>
+</div>
+  <!--头部-->
+<div class="mainCon" id="TabBox">
+
+    <div class="GrowTab hd">
+      <ul>
+          <!--<li><a href="#">育2周</a></li>-->
+      </ul>
+    </div>
+  <!--头部-->
+  <!--内容部分-->
+                  <div class="careCon bd">
+                      <div class="contentBox">
+                    <!--<div class="growtxt">“三早”是指孩子出生后要早吸吮、早接触、早开奶，这是母乳喂养成功的保证。“三早”是指孩子出生后要早吸吮、早接触、早开奶，这是母乳喂养成功的保证。“三早”是指孩子出生后要早吸吮、早接触、早开奶，这是母乳喂养成功的保证。“三早”是指孩子出生后要早吸吮、早接触、早开奶，这是母乳喂养成功的保证。</div>-->
+                      </div>
+                   </div>  
+  <input id="week" type="hidden" value={$week}>
+  <input id="month" type="hidden" value={$month}>
+</div>
+<script src="{MOBI_PATH}/public/js/jquery-1.8.3.min.js"></script>
+<script src="{MOBI_PATH}/public/js/TouchSlide.1.1.js"></script>
+<script src="{MOBI_PATH}/public/js/refresh.js"></script>
+<script type="text/javascript">
+    var week = parseInt($("#week").val(),10);
+    var month = parseInt($("#month").val(),10);                        
+    try{
+            $.ajaxSetup({
+                    error: function (x, e) {
+                           $(".mainCon").html(refresh);
+                            return false;
+                    }
+                });
+                
+                $.getJSON("{url('mobi2/grow/getTitle')}",function(data){      
+                if(data.length){
+                    var default_id = 0;
+                    var tab_html = "";
+                    var content_html = "";
+                    var index = (month >12 )? (52+ month-13): (week-1);
+                    var count = data.length;     
+                    for(var i=0; i< count; i++ ){          
+        //               content_html += '<div id="content_id_'+ data[i]["id"] +'" class="growtxt" tips=0><div style="width: 88%; margin:0 auto; text-align:center">loading...</div></div>';
+                       content_html += '<div id="content_id_'+ data[i]["id"] +'" class="growtxt" tips=0>\n\
+                                            <div style="width: 88%; margin:0 auto; text-align:center">\n\
+                                                <div class="searchingCon">\n\
+                                                    <div class="searchingCircle"></div>\n\
+                                                    <div class="searchingPic"><img src="{MOBI_PATH}/public/images/searchingpic1.jpg" width="30" height="25" alt=""/></div>\n\
+                                                    <p class="searchingTxt">loading...</p>\n\
+                                                </div>\n\
+                                            </div>\n\
+                                        </div>';
+                        if(i === index){         
+                          default_id = data[i]["id"];      
+                       }             
+                       tab_html += '<li><a href="javascript:;" onclick="setContent(' + data[i]["id"] + ')">'+ data[i]["title"] +'</a></li>';  
+                    }
+                    $('.GrowTab ul').html(tab_html);
+                    $('.careCon').html(content_html);
+                    setContent(default_id);
+                    TouchSlide({ 
+                    slideCell:"#TabBox",
+                    mailCell:".bd .careList",
+                    defaultIndex: index,          
+                    endFun:function(i,c){ //切换结束时执行     
+                            var BoxScrollLeft = 0; //定义导航的scrollLeft位置                    
+                            if(i>3){ //如果是第一个tab，则scrollLeft为0;                       
+                               for(var j=i; j>2; j--){
+                                BoxScrollLeft += $(".GrowTab>ul>li").eq(j).width() + 36; //当前LI的宽度
+                               }
+                               if(BoxScrollLeft){
+                                    BoxScrollLeft -= 18;
+                                }
+                            }
+                            $(".hd").animate({'scrollLeft':BoxScrollLeft+"px"});                   
+
+                            //这里Ajax调用 
+                            //传入的i值为导航栏索引值
+                            //传入的c值为导航个数  
+                            if(index !== i ){
+                             setContent(data[i]["id"]);
+                           }
+                            
+                    }
+                 });
+                }
+            });
+     }catch (ex) {
+                $(".mainCon").html(refresh);
+     }
+
+
+function setContent(id){
+   var tips = $("#content_id_"+id).attr("tips");
+   $('html,body').animate({scrollTop: 0}, 1);
+    if(tips == 0){
+         try{
+                $.ajaxSetup({
+                        error: function (x, e) {
+                               $("#content_id_"+id).html(refresh);
+                                return false;
+                        }
+                    });
+                $.getJSON("{url('mobi2/grow/getContent')}",{id:id},function(data){ 
+                    if(data){
+                        var content = data[0]["content"];
+                        $("#content_id_"+id).attr("tips", 1);
+                        $("#content_id_"+id).html('<div style="width: 88%; margin:0 auto">'+content+'</div>');
+                    }else{
+                        $("#content_id_"+id).html(refresh);
+                    }
+                });
+            }catch (ex) {
+                $("#content_id_"+id).html(refresh);
+            }
+    }
+    
+}
+</script>
+</body>
+</html>

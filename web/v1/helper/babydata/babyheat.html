@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>趣宝宝-体温</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="public/css/bootstrap.min.css">
+<link rel="stylesheet" href="public/css/baby.css">
+<style>
+.demo-list { padding-bottom:7px;}
+.demo-list li { line-height:31px;}
+.demo-list div.pull-right { width:160px;}
+.demo-list p { float:left; width:80px; text-align:right; font-size:14px;}
+.demo-list li sub { margin-left:5px;}
+.demo-list p .glyphicon-exclamation-sign { margin:0 5px;}
+</style>
+</head>
+
+<body>
+<nav class="clearfix">
+    <ul>
+        <li><a href="heartbeat.html" class="nav-1">心跳</a></li>
+        <li class="active"><a href="javascript:;" class="nav-2 begin">体温</a></li>
+        <li><a href="weight.html" class="nav-3">体重</a></li>
+        <li><a href="height.html" class="nav-4">身高</a></li>
+        <li><a href="air.html" class="nav-5">空气</a></li>
+        <li><a href="temp.html" class="nav-6">室温</a></li>
+        <li><a href="moisture.html" class="nav-7">湿度</a></li>
+    </ul>
+</nav>
+
+<!-- 体表体温 -->
+<section class="surface hidden">
+    <div class="circle-box">
+        <div class="circle-border">
+            <div class="circle-main">
+                <p>立即测量</p>
+            </div>
+        </div>
+        <div class="ready-box">
+                <h3>预热中</h3>
+                <p>预热需要5分钟，请确保温心带绑于宝宝腋下</p>
+        </div>
+    </div>
+    <section class="heav text-center">
+        <div class="container">
+            <div class="pull-left switch-helper"><i class="glyphicon glyphicon-question-sign"></i></div>
+        </div>
+    </section>
+</section>
+<!-- 体表体温 END -->
+
+<!-- 腋下体温 -->
+<section class="oxter hidden">
+    <section class="heav text-center">
+        <div class="container">
+            <div class="heav-body">
+                <h3 class="babyheatcolor">0<sup>℃</sup></h3>
+                <div class="countDown"></div>
+                <div class="moudle-btn"><a href="javascript:;">关闭体温测量</a></div>
+                <p></p>
+                <div class="notice text-left"></div>
+            </div>
+            <div class="pull-right history"><a href="javascript:;">历史<br>记录</a></div>
+            <div class="pull-left switch-helper"><i class="glyphicon glyphicon-question-sign"></i></div>
+        </div>
+    </section>
+    <hr />
+    <section class="warn clearfix">
+        <div>
+            <div class="switch switch-on pull-right" data-on-label="开" data-off-label="关">
+                <i></i>
+            </div>
+            <p class="normal">宝宝发烧时，系统每<span class="warn-time">30分钟</span>会发送警报一次，如需调整提醒频率，请进行设置。</p>
+        </div>
+    </section>
+</section>
+<!-- 腋下体温 END -->
+
+<!-- 帮助的弹框 -->
+<div class="baby-helper hidden">
+    <div class="filter"></div>
+    <div class="fp-table">
+        <div class="fp-tableCell">
+            <p>宝宝发烧时，可以将温心带绑于腋窝处测量体温。</p>
+            <div class="helper-img"><img src="public/images/min/oxter.jpg" alt=""></div>
+            <span>测量过程中，记得让温心带和宝宝皮肤进行亲密接触哦！等待5分钟就能测量到数据哦！</span>
+            <a href="javascript:;" class="close-helper">我知道了</a>
+        </div>
+    </div>
+</div>
+<!-- 帮助的弹框 END -->
+
+<!-- 温心带的弹框 -->
+<div class="baby-wxd hidden">
+    <div id="slideWxd" class="slideWxd">
+        <div class="bd">
+            <ul>
+                <li class="wxd1"><img src="public/images/min/wxd1.png" alt=""></li>
+                <li class="wxd2"><img src="public/images/min/wxd2.png" alt=""></li>
+                <li class="wxd3"><img src="public/images/min/wxd3.png" alt=""></li>
+                <li class="wxd4"><img src="public/images/min/wxd4.png" alt=""><a href="javascript:;" class="close-wxd" onClick="hidewxd()">我知道了</a></li>
+            </ul>
+        </div>
+        <div class="hd">
+            <ul></ul>
+        </div>
+    </div>
+</div>
+<!-- 温心带的弹框 END -->
+
+<div class="warn-box hidden">
+	<div class="filter"></div>
+    <div class="warn-set">
+        <ul>
+            <li class="active"><i class="pull-right"></i><span>1小时</span></li>
+            <li><i class="pull-right"></i><span>2小时</span></li>
+        </ul>
+        <div class="warn-set-font">
+            <p>设置系统消息提示宝宝体温、体表体温数据异常的时间间隔。</p>
+            <p>测量结果可能与宝宝实际体温有出入，数据仅供参考。</p>
+        </div>
+    </div>
+</div>
+
+<div class="filter-box hidden">
+	<div class="filter"></div>
+	<div class="show-history hidden">
+	</div>
+</div>
+
+<div class="page-loading"><div class="loadingbox"><img src="public/images/min/logo.png" alt="loading" /><ul><li><i class="active"></i></li><li><i></i></li><li><i></i></li><li><i></i></li><li><i></i></li></ul><p>努力加载中...</p></div></div>
+<script>
+var data_type = 6;
+</script>
+<script src="public/js/jquery.min.js"></script>
+<script src="public/js/highcharts.js"></script>
+<script src="public/js/highcharts-more.js"></script>
+<script src="public/js/babydata.js"></script>
+<script src="public/js/TouchSlide.1.1.js"></script>
+<script>
+TouchSlide({ 
+    slideCell:"#slideWxd",
+    titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+    mainCell:".bd ul", 
+    //effect:"leftLoop", 
+    autoPage:true //自动分页
+});
+</script>
+</body>
+</html>

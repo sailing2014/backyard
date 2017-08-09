@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$view['title']}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="public/css/uselist.css">
+</head>
+
+<body>
+
+<header>
+    <a href="javascript:history.go(-1);"><i class="glyphicon glyphicon-menu-left"></i></a>
+    <div class="uselist-font"><span>{$view['title']}</span></div>
+</header>
+
+<div class="title ct">
+    <h3>{$view['title']}</h3>
+</div>
+<div class="source ct"><span>来源：{$view['source']}</span><span>阅读：{$view['hits']}</span></div>
+<div class="contents" id="contents">
+    {$view['content']}
+</div>
+<div class="tags">相关标签：{$view['tags']}</div>
+</body>
+</html>

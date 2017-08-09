@@ -1,0 +1,291 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>用品清单</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/uselist.css">
+</head>
+
+<body>
+
+<section class="uselist-index">
+    <ul>
+        <li><a href="javascript:;"><img src="{MOBI_PATH}/public/images/min/list1.png"><span>吃</span></a></li>
+        <li><a href="javascript:;"><img src="{MOBI_PATH}/public/images/min/list2.png"><span>穿</span></a></li>
+        <li><a href="javascript:;"><img src="{MOBI_PATH}/public/images/min/list3.png"><span>住</span></a></li>
+        <li><a href="javascript:;"><img src="{MOBI_PATH}/public/images/min/list4.png"><span>行</span></a></li>
+        <li><a href="javascript:;"><img src="{MOBI_PATH}/public/images/min/list5.png"><span>玩</span></a></li>
+        <li><a href="javascript:;"><img src="{MOBI_PATH}/public/images/min/list6.png"><span>用</span></a></li>
+        <li><a href="javascript:;"><img src="{MOBI_PATH}/public/images/min/list7.png"><span>妈咪专用</span></a></li>
+    </ul>
+    <div class="clearfix"></div>
+</section>
+
+<section class="uselist-list hidden">
+    <nav>
+        <a href="javascript:;" class="active">吃</a>
+        <a href="javascript:;">穿</a>
+        <a href="javascript:;">住</a>
+        <a href="javascript:;">行</a>
+        <a href="javascript:;">玩</a>
+        <a href="javascript:;">用</a>
+        <a href="javascript:;">妈咪专用</a>
+    </nav>
+    <div class="uselist-list-con">
+        <ul>            
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="userlist-pages">
+        <a href="javascript:;" class="userlist-pages-left"> < </a>
+        <div>
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        </div>
+        <a href="javascript:;" class="userlist-pages-right"> > </a>
+    </div>
+    <div class="clearfix"></div>
+</section>
+
+<section class="line"></section>
+
+<input type="hidden" name="userlist-more-pages" id="userlist-more-pages" value="1" />
+<section class="section2">
+    <h3>精选好货</h3>
+    <div class="hotTopic" data-title="用品专题" data-url="{url('mobi/supply/topic')}">
+    </div>
+</section>
+<div class="loading"><div id="loading"><img src="{MOBI_PATH}/public/images/min/circle.png"></div></div>
+
+
+
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/uselist.js"></script>
+<script src="{MOBI_PATH}/public/js/main.js"></script>
+
+<script>
+var uselist = "";
+var list_id = 0;
+var allpage = 0;
+var pid = 0;
+
+$(function () {
+    pid = sessionStorage.getItem('pid');
+    if (pid) {
+        setChildren (pid);
+    }
+    getAllData();
+    getHotTopic();
+     
+    $('.userlist-pages a').click ( function () {
+        pid = sessionStorage.getItem('pid');
+        var tclass = $(this).attr("class");
+        var page_ul = $('.uselist-list-con').find("ul");
+        var nowpage;
+        page_ul.each(function () {
+            if (!$(this).hasClass('hidden')) {
+                nowpage = $(this).attr("class").split('-')[2];
+            }
+        });
+        if (nowpage) {
+            var newpages;
+            if (tclass == 'userlist-pages-left') {
+                if (nowpage > 1) {
+                    newpages = Number(nowpage) - 1;
+                }
+            } else {
+                if (nowpage < allpage) {
+                    newpages = Number(nowpage) + 1;
+                }
+            }
+            if (newpages) {
+                changepages(newpages);
+            }
+        }
+    });    
+   
+    setEvent('.uselist-list-con, .hotTopic');
+    
+    // 滚到底部加载更多
+	loadpage (url, nowpagebox, showcontent, returnbox);        
+})
+
+// 异步请求内容地址
+var url = "{url('mobi/topic/list',array('uid'=>$uid))}";
+var nowpagebox = '#userlist-more-pages';
+var showcontent = '';
+var returnbox = '.section2 .hotTopic';
+
+
+
+function changepages(pages) {
+    $('.uselist-list-con ul').addClass('hidden');
+    $('.uselist-' + pid + '-' + pages).removeClass('hidden');
+    var pages_points = '';
+    for (var k = 1; k<=allpage; k++) {
+        var cur = '';
+        if (k == pages) {
+            cur = ' class="active"';
+        }
+        pages_points += '<span' + cur + '></span>';
+    }
+    $('.userlist-pages div').html(pages_points);
+}
+
+function getAllData () {
+    $.getJSON("{url('mobi/supply/type')}", "start={$start}&close={$close}", function (json) {
+        if (json) {
+            uselist = localStorage.setItem('uselist', JSON.stringify(json));
+            setHtml();
+        }
+    });
+}
+
+function getHotTopic () {
+    $.getJSON("{url('mobi/supply/topic')}", "start={$start}&close={$close}", function (json) {
+        if (json) {
+            if (json.data) {
+                var data = json.data;
+                if (data) {
+                    var rs = data.data;
+                    if (rs.length > 0) {
+                        var topic = '';
+                        for (var x in rs) {
+                            var href = "{url('mobi/topic/view',array('id'=>thisid))}";
+                            href = href.replace("thisid", rs[x]['id']);
+                            topic += '<a href="' + href + '"  data-title="' + rs[x]['title'] + '"><img src="' + rs[x]['thumb'] + '"><span>' + rs[x]['title'] + '</span></a>';
+                            $('.hotTopic').html(topic);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function setHtml () {
+    uselist = localStorage.getItem('uselist');
+    if (uselist.length > 5) {
+        uselist = JSON.parse(uselist);
+        var index_list = '';
+        var list_nav = '';
+        var i = 1;
+        for (var n in uselist) {
+            index_list += '<li><a href="javascript:;" onclick="setChildren(' + uselist[n]['catid'] + ')"><img src="'+ uselist[n]['image'] +'" onerror="this.src=\'{MOBI_PATH}/public/images/avatar.jpg\'"><span>' + uselist[n]['catname'] + '</span></a></li>';
+            i++;
+        }
+        $('.uselist-index ul').html(index_list);
+        if (pid) {
+            setChildren (pid);
+        }
+    }
+}
+
+function setChildren (pid) {
+    sessionStorage.setItem('pid', pid);
+    uselist = localStorage.getItem('uselist');
+    if (uselist.length > 5) {
+        uselist = JSON.parse(uselist);
+        var index_list = '';
+        var list_nav = '';
+        var list_con = '';
+        var i = 1;
+        var j = 1;
+        for (var n in uselist) {
+            var cur = '';
+            if (uselist[n]['catid'] == pid) {
+                cur = ' class="active"';
+            }
+            list_nav += '<a href="javascript:;"' + cur + ' onclick="setChildren(' + uselist[n]['catid'] + ')">' + uselist[n]['catname'] + '</a>';
+            if (uselist[n]['catid'] == pid) {
+                var child = uselist[n]['child'];
+                if (child.length > 0) {
+                    for (var m in child) {
+                        var cur = '';
+                        var pagelist = 3;
+                        var thishref = "{url('mobi/supply/list')}&type_id=" + child[m]['catid'] + "&start={$month['start']}&close={$month['close']}";
+                        if ((j % pagelist != 1)) {
+                            list_con += '<li><a data-id="' + child[m]['catid'] + '" data-start="' + child[m]['start'] + '" data-close="' + child[m]['close'] + '" href="' + thishref + '" ><img src="'+ child[m]['image'] +'" onerror="this.src=\'{MOBI_PATH}/public/images/avatar.jpg\'"><span>' + child[m]['catname'] + '</span></a></li>';
+                            
+                        } else {
+                            var newpage = allpage = Math.floor(j/pagelist) + 1;
+                            var is_hidden = '';
+                            if (newpage > 1) {
+                                is_hidden = ' hidden';
+                            }
+                            list_con += '</ul><ul class="uselist-' + pid + '-' + newpage + is_hidden +'"><li><a data-id="' + child[m]['catid'] + '" data-start="' + child[m]['start'] + '" data-close="' + child[m]['close'] + '" href="' + thishref + '" ><img src="'+ child[m]['image'] +'" onerror="this.src=\'{MOBI_PATH}/public/images/avatar.jpg\'"><span>' + child[m]['catname'] + '</span></a></li>';
+                        }
+                        j++;
+                    }
+                }
+            }
+            i++;
+        }
+        if (allpage > 1) {
+            var pages_points = '';
+            for (var k = 1; k<=allpage; k++) {
+                var cur = '';
+                if (k == 1) {
+                    cur = ' class="active"';
+                }
+                pages_points += '<span' + cur + '></span>';
+                $('.userlist-pages').removeClass('hidden');
+            }
+        } else {
+            $('.userlist-pages').addClass('hidden');
+        }
+        list_con += '</ul><div class="clearfix"></div>';
+        $('.uselist-index').addClass('hidden');
+        $('.uselist-list').removeClass('hidden');
+        $('.uselist-list nav').html(list_nav);
+        $('.uselist-list-con').html(list_con);
+        $('.userlist-pages div').html(pages_points);
+    }
+}
+
+function loadpage (url, nowpagebox, showcontent, returnbox, extendsfunction) {
+    // 滚到底部加载更多
+    var flag = 0;  
+    $(window).scroll(function(){
+        if($(window).scrollTop() == $(document).height() - $(window).height()){
+            if (flag != 1) {
+                flag = 1;
+                loading();
+
+                //获得当前频道页数
+                var pages = Number($(nowpagebox).val()) + 1;
+                $.get(url,{page:pages,start:{$start},close:{$close}},function(result){
+                    // 模拟result 有数据和无数据的结果                 
+                    if (result.data) {           // 判断是否为空
+                        var showcontent = "";
+                        var countsize = "";     // 数据条数
+                        var list = result.data;
+                        //console.log(list);
+                        for (var i=0; i < list.length; i++) {
+                            var href = "{url('mobi/topic/view',array('id'=>thisid))}";
+                            href = href.replace("thisid", list[i]['id']);  
+                            showcontent += '<a href="' + href + '"  data-title="' + list[i]['title'] + '"><img src="' + list[i]['thumb'] + '"><span>' + list[i]['title'] + '</span></a>';
+                        }
+                        $("" + returnbox).append(showcontent);
+                        $(nowpagebox).val(pages);
+                        flag = 0;
+                    } else {
+                        flag = 1;
+                        if (extendsfunction == 1) {
+                            getcallback();
+                        }
+                    }
+                    $('.loading').remove();
+                });
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>

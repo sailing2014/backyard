@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>趣宝宝</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/style.css">
+</head>
+
+<body>
+<!--<header>
+    <a href="javascript:history.go(-1);"><i class="glyphicon glyphicon-menu-left"></i></a>
+    <div class="uselist-font"><span>{$tagsType}专题</span></div>
+</header>-->
+<section class="helpmore-nav">
+    <div class="sliderup hidden">&nbsp;<!--{$tagsType}专题--><a href="javascript:;" class="pull-right"><i class="glyphicon glyphicon-menu-up"></i></a></div>
+    <a href="javascript:;" class="sliderdown pull-right"><i class="glyphicon glyphicon-menu-down"></i></a>
+    <ul class="hidemore tags" data-title="{$type_title}专题">
+        {loop $tagsData $v}
+            <li class="col-xs-2"><a href="javascript:;" onclick="setContent({$type_id},{$v[id]})" {if $tags_id ==$v['id']}class="active"{/if}>{$v['name']}</a></li>
+        {/loop}
+    </ul>
+    <div class="clearfix"></div>
+</section>
+
+<section>
+    <div class="helpmore-container" data-title="{$type_title}专题">
+		<input type="hidden" name="helpmore-pages" id="helpmore-pages"  value="1" />
+        <ul>
+            {loop $contentData $v}
+            <li>
+                <a href="javascript:;" onclick="setClick('href','{$type_title}专题','/v1/helper/content/content.php?id={$v['id']}')">
+                    <div class="helpmore-img"><img src="{$v['thumb']}" onerror="this.src='{MOBI_PATH}/public/images/avatar.jpg'"></div>                  
+                    <h4>{$v['title']}</h4>
+                    <span>{$v['inputtime']}</span>
+                </a>
+            </li>
+            {/loop}
+        </ul>
+        <div class="clearfix"></div>
+        <!-- TODO ：此处添加按钮 查看更多 get传递month=-2 -->
+    </div>
+</section>
+
+<div class="loading"><div id="loading"><img src="{MOBI_PATH}/public/images/min/circle.png"></div></div>
+
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/main.js"></script>
+<script type="text/javascript">
+$(function () {   
+    $('.sliderdown').click(function () {
+        $('.sliderdown').addClass('hidden');
+        $('.sliderup').removeClass('hidden');
+        $('.hidemore').attr('class', 'showmore tags');
+        sessionStorage.setItem('dropdown', 1);
+        
+        //恢复选中行
+        setFirstLine(0);
+    });
+    $('.sliderup a').click(function () {
+        $('.sliderup').addClass('hidden');
+        $('.sliderdown').removeClass('hidden');
+        $('.showmore').attr('class', 'hidemore tags');
+        sessionStorage.setItem('dropdown', 0);
+        
+        //获取选中行
+        setFirstLine(1);
+    });  
+    
+    var dp = sessionStorage.getItem('dropdown');
+    if (dp == 1) {
+        $('.sliderdown').addClass('hidden');
+        $('.sliderup').removeClass('hidden');
+        $('.hidemore').attr('class', 'showmore tags');        
+        //恢复选中行
+        setFirstLine(0);
+    } else {
+        $('.sliderup').addClass('hidden');
+        $('.sliderdown').removeClass('hidden');
+        $('.showmore').attr('class', 'hidemore tags');  
+        
+        if(dp == 0){
+            //获取选中行
+            setFirstLine(1);
+        }
+    }    
+
+});
+
+// 异步请求内容地址
+var url = "{url('mobi/helper/more',array('type_id'=>$type_id,'tags_id'=>$tags_id))}";
+var nowpagebox = '#helpmore-pages';
+var returnbox = '.helpmore-container ul';
+var showcontent = "";
+var flag = 0;
+// 滚到底部加载更多
+ loadpage (nowpagebox, showcontent, returnbox);
+ 
+// 分页方法
+function loadpage (nowpagebox, showcontent, returnbox, extendsfunction) {   
+    // 滚到底部加载更多   
+    flag = 0;
+    $(window).scroll(function(){       
+        if($(window).scrollTop() == $(document).height() - $(window).height()){           
+            if (flag != 1) {
+                flag = 1;
+                $('.loading').show();
+
+                //获得当前频道页数
+                var pages = Number($(nowpagebox).val()) + 1;
+//                console.log(pages);
+                $.get(url,{page:pages},function(result){
+//                    console.log("-----");
+//                    console.log(url);
+//                    console.log("load page...");
+                    // 模拟result 有数据和无数据的结果 
+                    if (result.data != "") {           // 判断是否为空
+                        var showcontent = "";
+                        var countsize = "";     // 数据条数
+                        var list = result.data;
+                        var href = "";
+                        var onclick = "";
+                        //console.log;
+                        //(list);
+                        for (var i=0; i < list.length; i++) {                
+                            href = '/v1/helper/content/content.php?id=' + list[i]['id'];
+                            onclick = "setClick('href','{$type_title}专题','"+ href +"')";
+                            showcontent += '<li><a href="javascript:;" onclick='+ onclick +'><div class="helpmore-img"><img src="'+ list[i]['thumb'] +'" onerror="this.src=\'{MOBI_PATH}/public/images/avatar.jpg\'"></div><h4>' + list[i]['title'] + '</h4><span>' + list[i]['inputtime'] + '</span></a></li>';                            
+                        }
+                        $("" + returnbox).append(showcontent);
+                        $(nowpagebox).val(pages);
+                        flag = 0;
+                    } else {
+                        flag = 1;
+                        if (extendsfunction == 1) {
+                            getcallback();
+                        }
+                    }
+                    $('.loading').hide();
+                });
+            }
+        }
+    });  
+}
+
+//点击切换效果
+function setContent(type_id,tag_id){
+    //设置tag_id
+    sessionStorage.setItem('tag_id',tag_id);  
+    sessionStorage.setItem('type_id',type_id);
+    
+    //设置标签选中样式,获取选中行html
+                var html = "";
+                var dropdown = "";
+                var currentline = 0;
+                var line = 0;
+                currentlinehtml = "";
+                var templinehtml = "";
+                var tagslist = '<?php echo json_encode($tagsData) ?>';   
+                tagslist = JSON.parse(tagslist);                
+                if (tagslist) {                    
+                    for (var v in tagslist) {                         
+                        var cur = '';
+                        var line = Math.floor(v/4);
+                        if (tagslist[v]['id'] == tag_id) {                              
+                            cur = ' class="active" '; 
+                            currentline = line;                            
+                        }   
+                        templi = '<li class="col-xs-2"><a href="javascript:;"' + cur + 'onclick="setContent(' + type_id + ',' + tagslist[v]['id'] + ')">' + tagslist[v]['name'] + '</a></li>';
+                        html += templi;
+                        
+                        //获取4个templi,即一个templinehtml
+                        if( v%4 == 0){                           
+                            templinehtml = "";
+                        }
+                        templinehtml += templi;  
+                        
+                        //设置选中行currentlinehtml
+                        if(line === currentline){
+                            currentlinehtml = templinehtml;                            
+                        }
+                    }                  
+                }
+                
+                
+                sessionStorage.setItem('currentlinehtml', currentlinehtml);
+                               
+                      
+               dropdown  = sessionStorage.getItem('dropdown');             
+                if( dropdown == 0){//下拉设置第一行为选中行 
+                    setFirstLine(1);                        
+                }else{
+                   $(".tags").html(html);                        
+                }
+                
+                sessionStorage.setItem('tagshtml', html);
+  
+
+    //获取内容列表
+    $.getJSON("{url('mobi/helper/content')}",{ type_id: type_id, tags_id: tag_id }, function (json) { 
+                var contenthtml = "";
+                var onclick = "";
+                var href = "";
+                var contentlist = json.contentData;
+                if (contentlist) {
+                    for (var v in contentlist) {                             
+                        href = '/v1/helper/content/content.php?id=' + contentlist[v]['id'] ;
+                        onclick = "setClick('href','{$type_title}专题','"+ href +"')";
+                    contenthtml += '<li><a href="javascript:;" onclick='+ onclick +'><div class="helpmore-img"><img src="'+ contentlist[v]['thumb'] +'" onerror="this.src=\'{MOBI_PATH}/public/images/avatar.jpg\'"></div><h4>' + contentlist[v]['title'] + '</h4><span>' + contentlist[v]['inputtime'] + '</span></a></li>';           
+                    }                  
+                }
+                $(".helpmore-container ul").html(contenthtml);    
+                sessionStorage.setItem('contenthtml', contenthtml);
+            });    
+            
+    url = "{url('mobi/helper/more')}&type_id="+type_id+"&tags_id="+tag_id;   
+//    console.log(url);
+    $('#helpmore-pages').val(1);
+    loadpage (nowpagebox, "", returnbox); 
+}
+
+//设置helpermore-nav第一行内容
+function setFirstLine(off){
+    
+    var type_id = sessionStorage.getItem('type_id');
+    if(type_id == '{$type_id}'){
+        var tagshtml = sessionStorage.getItem('tagshtml');  
+        if(tagshtml){
+            if(off){      
+                var currentlinehtml = sessionStorage.getItem('currentlinehtml'); 
+                if(currentlinehtml){
+                    $(".tags").html(currentlinehtml);
+                }
+            }else{
+                $(".tags").html(tagshtml);
+                var tag_id = sessionStorage.getItem("tag_id");
+                if(tag_id){                
+                    var contenthtml = sessionStorage.getItem('contenthtml');
+                    $(".helpmore-container ul").html(contenthtml);    
+                }
+            }
+        }
+    }
+}    
+
+</script>
+</body>
+</html>

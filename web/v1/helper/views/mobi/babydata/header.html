@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{$page_variable["page_title"]}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{MOBI_PATH}/public/css/baby.css">
+</head>
+
+<body>
+
+<header>
+	<i class="glyphicon glyphicon-menu-left"></i>
+	<div class="baby-pic"><img src="{MOBI_PATH}/public/images/img-test-1.jpg"></div>
+	<div class="baby-font">{$entity_data["name"]}<!--i class="glyphicon glyphicon-triangle-bottom"></i--></div>
+	<!--div class="baby-more">
+		<ul>
+			<li><a href="#" class="baby-box"><div class="baby-pic"><img src="{MOBI_PATH}/public/images/"></div><div class="baby-font"></div></a></li>
+			<li><a href="#" class="baby-box"><div class="baby-pic"><img src="{MOBI_PATH}/public/images/"></div><div class="baby-font"></div></a></li>
+			<li><a href="#" class="baby-box"><div class="baby-pic"><img src="{MOBI_PATH}/public/images/"></div><div class="baby-font"></div></a></li>
+		</ul>
+	</div-->
+</header>
+
+<nav class="clearfix">
+	<ul>
+		<li {if $page_variable['page_type'] == 'heartbeat'}class="active"{/if}><a href="{url('mobi/babydata/heartbeat')}" class="nav-1">心跳<i class="glyphicon glyphicon-exclamation-sign"></i></a></li>
+		<li {if $page_variable['page_type'] == 'babyheat'}class="active"{/if}><a href="{url('mobi/babydata/babyheat')}" class="nav-2">体表<br>体温</a></li>
+		<li {if $page_variable['page_type'] == 'weight'}class="active"{/if}><a href="{url('mobi/babydata/weight')}" class="nav-3">体重</a></li>
+		<li {if $page_variable['page_type'] == 'height'}class="active"{/if}><a href="{url('mobi/babydata/height')}" class="nav-4">身高</a></li>
+		<li {if $page_variable['page_type'] == 'air'}class="active"{/if}><a href="{url('mobi/babydata/air')}" class="nav-5">空气</a></li>
+		<li {if $page_variable['page_type'] == 'temperature'}class="active"{/if}><a href="{url('mobi/babydata/temperature')}" class="nav-6">室温</a></li>
+		<li {if $page_variable['page_type'] == 'moisture'}class="active"{/if}><a href="{url('mobi/babydata/moisture')}" class="nav-7">湿度</a></li>
+	</ul>
+</nav>

@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+	<div class="subnav">
+		<div class="content-menu ib-a blue line-x">
+			<a href="{url('admin/blog/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+		</div>
+		<div class="bk10"></div>
+		<div class="explain-col">
+			<form action="" method="get">
+				<input type="hidden" name="s" value="admin">
+				<input type="hidden" name="c" value="blog">
+				<input type="hidden" name="a" value="index">
+				<input type="text" name="phone" class="input-text" placeholder="用户手机号" value="{urldecode($map['phone'])}">
+				<input type="text" name="tags" class="input-text" placeholder="标签" value="{$map['tags']}">
+                类型：
+				<select name="type" id="">
+                    <option value="">全部</option>
+					{loop $types $k=>$v}
+						<option value="{$k}" {if isset($map['type']) and $k == $map['type']}selected="selected"{/if}>{$v}</option>
+					{/loop}
+				</select>
+				<input type="submit" value="查询">
+                <span class="onShow">暂不支持模糊查询</span>
+			</form>
+		</div>
+	</div>
+	
+	<div class="table-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th></th>
+					<th>ID</th>
+					<th>用户昵称</th>
+					<th>用户手机号</th>
+                    <th>标签</th>
+					<th>附件</th>
+					<th>时间</th>
+                    <th>推荐</th>
+					<th>状态</th>
+					<th width="100">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{loop $data['data'] $v}
+				<tr>
+					<td><input type="checkbox" name="id[]" value="{$v['d_id']}"></td>
+					<td>{$v['d_id']}</td>
+					<td>{$v['user_id']}</td>
+					<td>{$v['phone']}</td>
+                    <td>{loop $v['tags']  $t}
+                            {$t['define']}<br/>
+                        {/loop}</td>
+					<td>{$types[$v['d_type']]}</td>
+					<td>{date('Y-m-d H:i',$v['d_time'])}</td>
+                    <td>{$positions[$v['position_id']]}</td>
+					<td>{if $v['is_show']}展示{else}屏蔽{/if}</td>
+					<td><a href="{url('admin/blog/one',array('id'=>$v['d_id']))}">编辑</a></td>
+				</tr>
+                <tr><td colspan="10" style="background: #fee;">{$v['d_content']}</td></tr>
+				{/loop}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+					<td colspan="3"><input type="button" value="删除" class="delAll" data-url="{url('admin/blog/del')}">
+					<input type="button" value="屏蔽" class="hideAll" data-url="{url('admin/blog/set_hide')}">
+					<input type="button" value="展示" class="showAll" data-url="{url('admin/blog/set_show')}"></td>
+					<td colspan="6">{$data['pagelist']}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<script>
+    $(function() {
+        $('.chkAll').on('click',function() {
+            $(':checkbox').not(':last').attr('checked', this.checked);
+        });
+        $('.delAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'id':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+        $('.hideAll').on('click',function(){
+            var chk = Array();
+            $(':checked').not('.chkAll').each(function(i,e){
+                chk[i] = $(e).attr('value');
+            });
+            chk.shift();
+            $.getJSON($(this).data('url'),{'id':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+        $('.showAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'id':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>

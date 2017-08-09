@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>趣宝宝</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/style.css">
+</head>
+
+<body>
+<!--<header>
+    <a href="javascript:history.go(-1);"><i class="glyphicon glyphicon-menu-left"></i></a>
+    <div class="uselist-font"><span>{$tagsType}专题</span></div>
+</header>-->
+<section class="helpmore-nav">
+    <div class="sliderup hidden">&nbsp;<!--{$tagsType}专题--><a href="javascript:;" class="pull-right"><i class="glyphicon glyphicon-menu-up"></i></a></div>
+    <a href="javascript:;" class="sliderdown pull-right"><i class="glyphicon glyphicon-menu-down"></i></a>
+    <ul class="hidemore" data-title="{$type_title}专题">
+        {loop $tagsData $v}
+            <li class="col-xs-2"><a href="{url('mobi/helper/list',array('type_id'=>$type_id,'tags_id'=>$v['id']))}" data-id="{$v['id']}" {if $tags_id ==$v['id']}class="active"{/if}>{$v['name']}</a></li>
+        {/loop}
+    </ul>
+    <div class="clearfix"></div>
+</section>
+
+<section>
+    <div class="helpmore-container" data-title="{$type_title}专题">
+		<input type="hidden" name="helpmore-pages" id="helpmore-pages" id="helpmore-pages" value="1" />
+        <ul>
+            {loop $contentData $v}
+            <li>
+                <a href="/v1/helper/content/content.php?id={$v['id']}">
+                    <div class="helpmore-img"><img src="{$v['thumb']}" onerror="this.src='{MOBI_PATH}/public/images/avatar.jpg'"></div>                  
+                    <h4>{$v['title']}</h4>
+                    <span>{$v['inputtime']}</span>
+                </a>
+            </li>
+            {/loop}
+        </ul>
+        <div class="clearfix"></div>
+        <!-- TODO ：此处添加按钮 查看更多 get传递month=-2 -->
+    </div>
+</section>
+
+<div class="loading"><div id="loading"><img src="{MOBI_PATH}/public/images/min/circle.png"></div></div>
+
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/main.js"></script>
+<script type="text/javascript">
+$(function () {
+    setEvent('.hidemore, .helpmore-container');
+
+    $('.sliderdown').click(function () {
+        $('.sliderdown').addClass('hidden');
+        $('.sliderup').removeClass('hidden');
+        $('.hidemore').attr('class', 'showmore');
+        sessionStorage.setItem('dropdown', 1)
+    });
+    $('.sliderup a').click(function () {
+        $('.sliderup').addClass('hidden');
+        $('.sliderdown').removeClass('hidden');
+        $('.showmore').attr('class', 'hidemore');
+        sessionStorage.setItem('dropdown', 0)
+    });
+    
+    var dp = sessionStorage.getItem('dropdown');
+    if (dp == 1) {
+        $('.sliderdown').addClass('hidden');
+        $('.sliderup').removeClass('hidden');
+        $('.hidemore').attr('class', 'showmore');
+    } else {
+        $('.sliderup').addClass('hidden');
+        $('.sliderdown').removeClass('hidden');
+        $('.showmore').attr('class', 'hidemore');
+    }
+    
+	// 滚到底部加载更多
+	loadpage (url, nowpagebox, showcontent, returnbox);
+});
+
+// 异步请求内容地址
+var url = "{url('mobi/helper/more',array('type_id'=>$type_id,'tags_id'=>$tags_id))}";
+var nowpagebox = '#helpmore-pages';
+var returnbox = '.helpmore-container ul';
+var showcontent = "";
+
+// 分页方法
+function loadpage (url, nowpagebox, showcontent, returnbox, extendsfunction) {
+    // 滚到底部加载更多
+    var flag = 0;
+    $(window).scroll(function(){
+        if($(window).scrollTop() == $(document).height() - $(window).height()){
+            if (flag != 1) {
+                flag = 1;
+                $('.loading').show();
+
+                //获得当前频道页数
+                var pages = Number($(nowpagebox).val()) + 1;
+
+                $.get(url,{page:pages},function(result){
+                    // 模拟result 有数据和无数据的结果
+                    if (result.data != "") {           // 判断是否为空
+                        var showcontent = "";
+                        var countsize = "";     // 数据条数
+                        var list = result.data;
+                        //console.log(list);
+                        for (var i=0; i < list.length; i++) {
+                            showcontent += '<li>\<a href="content/content.php?id='+list[i].id+'">\
+                                    <div class="helpmore-img"><img src="'+list[i].thumb+'"></div>\
+                                    <h4>'+list[i].title+'</h4>\
+                                    <span>'+list[i].inputtime+'</span>\
+                                </a>\</li>';
+                        }
+                        $("" + returnbox).append(showcontent);
+                        $(nowpagebox).val(pages);
+                        flag = 0;
+                    } else {
+                        flag = 1;
+                        if (extendsfunction == 1) {
+                            getcallback();
+                        }
+                    }
+                    $('.loading').hide();
+                });
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>

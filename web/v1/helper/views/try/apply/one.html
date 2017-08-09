@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/dialog.js"></script>
+    <script type="text/javascript" src="{LANG_PATH}lang.js"></script>
+    <script type="text/javascript" src="{ADMIN_THEME}js/core.js"></script>
+    <title>admin</title>
+</head>
+<body style="font-weight: normal;">
+<div class="subnav">
+    <div class="content-menu ib-a blue line-x">
+        <a href="{url('try/apply/index')}"><em>{lang('a-list')}</em></a>
+        <span>|</span>
+        <a href="javascript:;" class="on"><em>{lang('a-edit')}</em></a>
+    </div>
+    <div class="bk10"></div>
+    <div class="table-list">
+        <form method="post" action="">
+            <table width="100%" class="table_form">
+                <tbody>
+                <tr>
+                    <th width="20%">商品名称：</th>
+                    <td><a href="{url('try/item/one',array('id'=>$data['product']['productId']))}">{$data['product']['productName']}</a></td>
+                </tr>
+                <tr>
+                    <th>申请人：</th>
+                    <td>{$data['applyName']}</td>
+                </tr>
+                <tr>
+                    <th>申请人手机：</th>
+                    <td><input type="text" class="input-text" name="mobile" value="{$data['mobile']}"/></td>
+                </tr>
+                <tr>
+                    <th>申请人地址：</th>
+                    <td><input type="text" class="input-text" name="area" value="{$data['area']}"/></td>
+                </tr>
+                <tr>
+                    <th>申请人详细地址：</th>
+                    <td><input type="text" class="input-text" name="desarea" size="50" value="{$data['desarea']}"/></td>
+                </tr>
+                <tr>
+                    <th>申请人邮编：</th>
+                    <td><input type="text" class="input-text" name="areacode" value="{$data['areacode']}"/></td>
+                </tr>
+                <tr>
+                    <th>申请状态：</th>
+                    <td>{loop $statusList $k=>$v}
+                        <label for=""><input type="radio" name="status" value="{$k}"  {if $data['status']==$k}checked{/if}/>{$v}</label>
+                        {/loop}</td>
+                </tr>
+                <tr class="hidden">
+                    <th>快递公司：</th>
+                    <td>
+                        <!--<input type="text" class="input-text" name="expressType" value="{$data['expressType']}"/>-->
+                        <select name="postType" id="">
+                            {loop $expressList $k=>$v}
+                            <option value="{$k}" {if $k==$data['postType']}selected{/if} >{$v}</option>
+                            {/loop}
+                        </select>
+                    </td>
+                </tr>
+                <tr class="hidden">
+                    <th>快递单号：</th>
+                    <td><input type="text" class="input-text" name="postId" value="{$data['postId']}"/><button class="postView">查看</button></td>
+                </tr>
+                <tr class="hidden">
+                    <th>快递进度：</th>
+                    <td><div class="postShow" data-url="{url('try/apply/getPostInfo')}"></div></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td><input type="button" value="提交"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+        <div class = "note">
+            <dl>
+                <dt>备注</dt>
+                <dd>0：在途，即货物处于运输过程中；</dd>
+                <dd>1：揽件，货物已由快递公司揽收并且产生了第一条跟踪信息；</dd>
+                <dd>2：疑难，货物寄送过程出了问题；</dd>
+                <dd>3：签收，收件人已签收；</dd>
+                <dd>4：退签，即货物由于用户拒签、超区等原因退回，而且发件人已经签收；</dd>
+                <dd>5：派件，即快递正在进行同城派件；</dd>
+                <dd>6：退回，货物正处于退回发件人的途中；</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //快递查询
+    $('.postView').click(function(){
+        var type = $('[name=postType]').val(),
+                postid = $('[name=postId]').val(),
+                url = $('.postShow').data('url'),
+                html = '',
+                statusList = ['在途','揽件','疑难','签收','退签','派件','退回'];
+        $.get(url,{type:type,postid:postid},function(json){
+            if(json.status==200){
+                html = '<ul></ul><li>快递单号：' +json.nu+ '</li>';
+                html += '<li>当前状态：'+statusList[parseInt(json.state)] +'</li></ul>';
+                html += '<table>';
+                html += '<tr><th>时间</th><th>进度</th></tr>'
+                for(var i =0; i< json.data.length; i++){
+                    html+='<tr><td>'+json.data[i].time+'</td><td>'+json.data[i].context+'</td></tr>';
+                }
+                html+='</table>';
+                $('.postShow').html(html);
+            }else{
+                $('.postShow').html('网络出错');
+            }
+        });
+
+    });
+    //
+    $(function(){
+        if( $('[name=status]:checked').val()>3 ){
+            $('[name=status]').parents('tr').nextAll('.hidden').show();
+        }
+    });
+
+    $('[name=status]').change(function(){
+        if($(this).val()>3){
+            $(this).parents('tr').nextAll('.hidden').show();
+        }else{
+            $(this).parents('tr').nextAll('.hidden').hide();
+        }
+    });
+    //
+    $('form').submit(function(){return false;});
+    $(':button:last').on('click',function(){
+        var form = $(this).parents('form');
+        $.post(form.attr('action'),form.serialize(),function(json){
+            alert(json.info);
+            if(json.code){
+                history.go(-1);
+            }else{
+                location.href="";
+            }
+        },'json');
+    });
+</script>
+</body>
+</html>

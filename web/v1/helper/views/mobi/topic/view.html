@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>用品清单</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/uselist.css">
+</head>
+
+<body>
+
+<!--<header>
+    <a href="javascript:history.go(-1);"><i class="glyphicon glyphicon-menu-left"></i></a>
+    <div class="uselist-font"><span>用品清单列表</span></div>
+    <div class="uselist-action">
+        <a href="{url('mobi/supply/mine')}" class="myuselist">我的清单</a><sup>{$pick_count}</sup>
+    </div>
+</header>-->
+
+<section class="section3">
+	<h3>{$view['title']}</h3>
+    <div>
+        {htmlspecialchars_decode($view['content'])}
+    </div>
+	<ul class="cm-2">
+        {loop $view['supply'] $v}
+		<li>
+			<a href="{url('mobi/special/view',array('id'=>$v['id']))}">
+				<em><img src="{$v['thumb']}"></em>
+				<span>{$v['title']}</span>
+			</a>
+		</li>
+        {/loop}
+
+	</ul>
+</section>
+
+
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/main.js"></script>
+<script>
+    $(function(){
+        setEvent('.uselist-action,.section3');
+    })
+</script>
+</body>
+</html>

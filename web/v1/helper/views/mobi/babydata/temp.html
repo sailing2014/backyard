@@ -1,0 +1,122 @@
+{template mobi/babydata/header}
+<section class="heav text-center">
+    <div class="container">
+        <div class="heav-body">
+            <h3 class="moisturecolor">30<sup>℃</sup></h3>
+            <p>正常范围<span>20—24</span>℃</p>
+            <div class="notice text-left">今日室内温度已经超过20-24℃正常范围值，室温过高会引起宝宝皮肤蒸发大量汗液排出而散热，呼吸增快，带走水分，请注意给宝宝多喝水，并采取措施降低室温。</div>
+        </div>
+        <div class="pull-right history"><a href="javascript:;">历史<br>记录</a></div>
+    </div>
+</section>
+
+<section class="recommend">
+    <div class="rec-tit">
+        <a href="javascript:;" class="pull-right">更多<i class="pull-right glyphicon glyphicon-menu-right"></i></a>
+        <span class="pull-left"><i class="glyphicon glyphicon-hand-right"></i>推荐阅读</span>
+    </div>
+    <div class="rec-list clearfix">
+        <ul>
+            <li>
+                <a href="javascript:;">
+                    <div class="helpmore-img"><img src="{MOBI_PATH}/public/images/img-test-2.jpg"></div>
+                    <h4>宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点宝贝护理需要掌握哪几点！</h4>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <div class="helpmore-img"><img src="{MOBI_PATH}/public/images/img-test-3.jpg"></div>
+                    <h4>宝贝护理需要掌握哪几点！</h4>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <div class="helpmore-img"><img src="{MOBI_PATH}/public/images/img-test-2.jpg"></div>
+                    <h4>宝贝护理需要掌握哪几点！</h4>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <div class="helpmore-img"><img src="{MOBI_PATH}/public/images/img-test-2.jpg"></div>
+                    <h4>宝贝护理需要掌握哪几点！</h4>
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<div class="filter-box hide">
+	<div class="filter"></div>
+	<div class="show-history hidden">
+	</div>
+</div>
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+<script src="{MOBI_PATH}/public/js/jquery.flot.js"></script>
+<script src="{MOBI_PATH}/public/js/jquery.flot.time.min.js"></script>
+<script src="{MOBI_PATH}/public/js/babydata.js"></script>
+<script src="{MOBI_PATH}/public/js/TouchSlide.1.1.js"></script>
+
+<script type="text/javascript">
+TouchSlide( { slideCell:"#tabBox1"});
+
+// 加载报表内容
+function setTable() {
+    var d1 = [ [24, 68], [25, 65], [26, 62.5], [27, 69.69], [28, 65], [29, 61], [30, 68] ];    // 曲线参数：  [ 日期，数值 ]
+    var Ymin = 60;   // Y轴最小值
+    var Ymax = 70;  // Y轴最大值
+    var ticks = 5; // Y轴分多少个刻度
+    var units = '℃'
+    var color = "#3dbaf4";
+    var titles = '最近七天室温数据';
+    var icon = 'icon-temp';
+    var setmonths = '十月';
+    
+    var tithtml = '<div class="his-tit"><a href="javascript:;" class="pull-right" onclick="checkview(this)">看列表</i></a><i class="icon-table '+icon+'"></i>'+titles+'</div>';
+    
+    // 图表
+    var pichtml = '<div class="demo-container"><span class="unit">'+units+'</span><span class="setmonths">'+setmonths+'</span><div id="placeholder" class="demo-placeholder"></div></div>';
+    
+    // 列表
+    var listhtml = '<div class="demo-list hidden"><ul>';
+    for (var i = d1.length - 1; i >= 0; i--) {
+        if (i == 6 || i == 2) {
+            listhtml += '<li class="notice"><span class="pull-left">2015/07/'+d1[i][0]+'</span><p class="pull-right"><i class="glyphicon glyphicon-exclamation-sign"></i>'+d1[i][1]+'<sub>'+units+'</sub></p></li>';
+        } else {
+            listhtml += '<li><span class="pull-left">2015/07/'+d1[i][0]+'</span><p class="pull-right">'+d1[i][1]+'<sub>'+units+'</sub></p></li>';
+        }
+    }
+    listhtml += '</ul><div class="clearfix"></div></div>';
+    
+    var sethtml = tithtml + pichtml + listhtml;
+    $('.show-history').html(sethtml);
+    
+    $.plot("#placeholder", [ d1 ],{
+        series: { lines: { show: true }, points: { show: true } },
+        yaxis: { min:Ymin, max:Ymax, ticks:ticks },
+        colors: [color],
+        grid: { hoverable: true, clickable: true }
+    });
+    
+    $("<div id='tooltip'></div>").appendTo("body");
+    $("#placeholder").bind("plothover", function (event, pos, item) {
+        if (item) {
+            var x = item.datapoint[0].toFixed(1),
+                y = item.datapoint[1].toFixed(1);
+
+            $("#tooltip").html(y + units)
+                .css({top: item.pageY-40, left: item.pageX-24})
+                .fadeIn(200);
+        } else {
+            $("#tooltip").hide();
+        }
+    });
+
+    $("#placeholder").bind("plotclick", function (event, pos, item) {
+        if (item) {
+            $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
+        }
+    });
+}
+</script>
+</body>
+</html>

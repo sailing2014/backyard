@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>趣宝宝-空气</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="public/css/bootstrap.min.css">
+<link rel="stylesheet" href="public/css/baby.css">
+</head>
+
+<body>
+
+<nav class="clearfix">
+    <ul>
+        <li><a href="heartbeat.html" class="nav-1">心跳</a></li>
+        <li><a href="babyheat.html" class="nav-2">体温</a></li>
+        <li><a href="weight.html" class="nav-3">体重</a></li>
+        <li><a href="height.html" class="nav-4">身高</a></li>
+        <li class="active"><a href="javascript:;" class="nav-5">空气</a></li>
+        <li><a href="temp.html" class="nav-6">室温</a></li>
+        <li><a href="moisture.html" class="nav-7">湿度</a></li>
+    </ul>
+</nav>
+
+<section class="heav text-center">
+    <div class="container">
+        <div class="heav-body">
+            <h3 class="aircolor"></h3>
+            <p><br /></p>
+            <div class="notice text-left"></div>
+        </div>
+        <div class="pull-right history"><a href="javascript:;">历史<br>记录</a></div>
+    </div>
+</section>
+
+<section class="suggestion hidden">
+    <div class="rec-tit">
+        <span class="pull-left"><i class="glyphicon glyphicon-talk"></i>健康建议</span>
+    </div>
+    <div class="sug-list">
+			<div id="tabBox1" class="tabBox">
+				<div class="hd">
+					<ul>
+					</ul>
+				</div>
+				<div class="bd" id="tabBox1-bd">
+				</div>
+			</div>
+    </div>
+</section>
+
+<section class="recommend">
+    <div class="rec-tit">
+        <span class="pull-left"><i class="glyphicon glyphicon-hand-right"></i>推荐阅读</span>
+    </div>
+    <div class="rec-list clearfix">
+        <ul>
+        </ul>
+    </div>
+</section>
+
+<div class="filter-box hidden">
+	<div class="filter"></div>
+	<div class="show-history hidden">
+	</div>
+</div>
+
+<div class="page-loading"><div class="loadingbox"><img src="public/images/min/logo.png" alt="loading" /><ul><li><i class="active"></i></li><li><i></i></li><li><i></i></li><li><i></i></li><li><i></i></li></ul><p>努力加载中...</p></div></div>
+<script type="text/javascript">
+var data_type = 3;
+</script>
+<script src="public/js/jquery.min.js"></script>
+<script src="public/js/highcharts.js"></script>
+<script src="public/js/babydata.js"></script>
+<script src="public/js/TouchSlide.1.1.js"></script>
+</body>
+</html>

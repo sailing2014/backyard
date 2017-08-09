@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+	<div class="subnav">
+		<div class="content-menu ib-a blue line-x">
+			<a href="{url('admin/alarm_rule/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+			<!--{if admin_auth($userinfo['roleid'], 'config-add')}<a href="{url('admin/alarm_info/one')}"><em>{lang('a-add')}</em></a><span>|</span>{/if}-->
+		</div>
+		<div class="bk10"></div>
+		<div class="explain-col">
+			
+		</div>
+	</div>
+	
+	<div class="table-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th></th>
+					<th>ID</th>
+					<th>设备类型</th>
+					<th>数据类型</th>
+					<th>触发警报（时间次数）</th>
+					<th>时间间隔</th>
+                    <th>警报原因</th>
+                    <th>设置时间</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{loop $data $v}
+				<tr>
+					<td><input type="checkbox" name="id[]" value="{$v['alarm_config_id']}"></td>
+					<td>{$v['alarm_config_id']}</td>
+					<td>{if $devices[$v['device_type']]}{$devices[$v['device_type']]['name']}{else}{$v['device_type']}{/if}</td>
+					<td>{if $sensors[$v['alarm_type']]}
+                            {$sensors[$v['alarm_type']]}
+                        {else}
+                            {$v['alarm_type']}{/if}</td>
+					<td>{if $v['cycle']&& $v['count']}{$v['cycle']}分钟/{$v['count']}次{else}无{/if}</td>
+					<td>{if $v['alarm_interval']}{$v['alarm_interval']}分钟{else}无{/if}</td>
+                    <td>{$v['reason']}</td>
+                    <td>{date('Y-m-d H:i:s',$v['time'])}</td>
+					<td>
+                        {if $v['update_flag']}<a href="{url('admin/alarm_rule/one',array('id'=>$v['alarm_config_id']))}">修改</a>{/if}</td>
+				</tr>
+				{/loop}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+					<td>
+                        <!--<input type="button" value="删除" class="delAll" data-url="{url('admin/alarm_rule/del')}">-->
+                    </td>
+					<td colspan="8">{$data['pagelist']}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<script>
+    $(function() {
+        $('.chkAll').on('click',function() {
+            $(':checkbox').not(':last').attr('checked', this.checked);
+        });
+        $('.delAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'id':chk.join(',')},function(json){                
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+
+    })
+</script>
+</body>
+</html>

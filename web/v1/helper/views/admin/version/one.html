@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+<script type="text/javascript" src="{ADMIN_THEME}js/dialog.js"></script>
+<script type="text/javascript" src="{LANG_PATH}lang.js"></script>
+<script type="text/javascript" src="{ADMIN_THEME}js/core.js"></script>
+<script type="text/javascript" src="extensions/kindeditor/kindeditor.js"></script>
+<link rel="stylesheet" href="extensions/kindeditor/themes/default/default.css"/>
+<title>admin</title>
+
+</head>
+<body style="font-weight: normal;">
+<div class="subnav">
+	<div class="content-menu ib-a blue line-x">
+		<a href="{url('admin/version/index')}"><em>{lang('a-list')}</em></a>
+		<span>|</span>
+		<a href="javascript:;" class="on"><em>{lang('a-edit')}</em></a>
+	</div>
+	<div class="bk10"></div>
+	<div class="table-list">
+		<form method="post" action="">
+		<table width="100%" class="table_form">
+			<tbody>
+				<tr>
+					<th width="20%">ID：</th>
+					<td>{$data['vid']}</td>
+				</tr>
+                <tr>
+                    <th>平台：</th>
+                    <td><select name="plat">
+                        {loop $platforms $k=>$v}
+                        <option value="{$v}" {if $v==$data['plat']}selected{/if}>{$v}</option>
+                        {/loop}
+                    </select></td>
+                </tr>
+                <tr>
+                    <th>版本：</th>
+                    <td><input type="text" name="version" value="{$data['version']}" class="input-text"/></td>
+                </tr>
+                <tr>
+                    <th>MD5：</th>
+                    <td><input type="text" name="md5" value="{$data['md5']}" class="input-text"/></td>
+                </tr>
+                <tr>
+                    <th>下载地址：</th>
+                    <td>
+                        <div class="upload">
+                            <input class="ke-input-text input-text" type="text" size="50" name="download" id="download" value="{$data['download']}" />
+                            <input type="button" id="uploadButton" value="上传"
+                                   data-url="{url('attachment/alioss_file',array('size'=>50,'type'=>urlencode(base64_encode('tar,apk,ipa,bin') )))}" />
+                        </div>
+                        <div class="ke-dialog-loading-content hidden" >上传中，请稍候 ...</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>添加时间：</th>
+                    <td>{if $data['create_time']}{date('Y-m-d H:i',$data['create_time'])}{/if}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td><input type="button" value="保存"/></td>
+                </tr>
+			</tbody>
+		</table>
+	</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+    KindEditor.ready(function(K) {
+        var url =  K('#uploadButton').attr('data-url'),
+                dir = 'app/' + K('[name=plat]').val()+'/',
+                save = 'babycare.' + K('[name=version]').val();
+        url += '&document=' + dir + '&save=' + save;
+
+        var uploadbutton = K.uploadbutton({
+            button : K('#uploadButton')[0],
+            fieldName : 'file',
+            url : url,
+            afterUpload : function(data) {
+                if (data.error == 0) {
+                    var url = K.formatUrl(data.filename, 'absolute');
+                    K('#download').val(url);
+                    $('.ke-dialog-loading-content').hide();
+                } else {
+                    alert(data.result);
+                }
+            },
+            afterError : function(str) {
+                //console.log('错误信息: ' + str);
+            }
+        });
+        uploadbutton.fileBox.change(function(e) {
+            $('.ke-dialog-loading-content').show();
+            uploadbutton.submit();
+        });
+    });
+
+
+    $(function(){
+        $('[name=version],[name=plat]').change(function(){
+            var url =  $('#uploadButton').attr('data-url'),
+                    dir = 'app/' + $('[name=plat]').val()+'/',
+                    save = 'babycare.' + $('[name=version]').val();
+            url += '&document=' + dir + '&save=' + save;
+            $('.ke-form').attr('action',url);
+        });
+
+        $('form').submit(function(){return false;});
+        $(':button:last').on('click',function(){
+            var form = $(this).parents('form');
+            $.post(form.attr('action'),form.serialize(),function(json){
+                alert(json.info);
+                if(json.code){
+                    history.go(-1);
+                }else{
+                    location.href="";
+                }
+            },'json');
+        });
+    })
+</script>
+</body>
+</html>

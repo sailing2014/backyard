@@ -1,0 +1,8 @@
+/nbproject/*
+/web/v1/helper/cache/*
+*.swo
+*.swp
+*.sublime-project
+*.sublime-workspace
+
+.idea

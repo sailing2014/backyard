@@ -1,0 +1,85 @@
+<!doctype html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Cache-Control" content="max-age=0" />
+<meta name="MobileOptimized" content="240" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+<title>搜索页面</title>
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/common.css" type="text/css" />
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/style.css" type="text/css" />
+</head>
+<body>
+<!--头部搜索框-->
+<div class="searchTop">
+    <a class="leftarrow" href="#" onclick="javascript:history.back(-1);return false;"><img src="{MOBI_PATH}/public/images/searcharrow.png" width="10" height="17" alt=""/></a>
+<div class="iptbox">
+  <input type="text" class="ipt" placeholder="搜索感兴趣的育儿知识、营养膳食">
+</div>
+<a class="rightsearch" href="#"><img src="{MOBI_PATH}/public/images/saerch.png" width="15" height="17" alt=""/></a>
+</div>
+<!--头部搜索框-->
+<div class="mainCon">
+<div class="searchCon">
+<div class="searchTit"><img src="{MOBI_PATH}/public/images/searchHot.png" width="17" height="17" alt="" class="pr10" />热门搜索</div>
+<div class=" searchList clr fix">
+<ul>                                   
+<li><a href="{url('mobi2/search/getListbyKey')}&key=湿疹">湿疹</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=咳嗽">咳嗽</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=发烧">发烧</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=便秘">便秘</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=腹泻">腹泻</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=尿布疹">尿布疹</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=早教">早教</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=过敏">过敏</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=疫苗">疫苗</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=语言发育">语言发育</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=长牙">长牙</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=配方奶粉">配方奶粉</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=婴儿米粉">婴儿米粉</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=母乳喂养">母乳喂养</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=断奶">断奶</a></li>
+<li><a href="{url('mobi2/search/getListbyKey')}&key=夜奶">夜奶</a></li>
+</ul>
+</div>
+</div>
+  <!---->
+  <div class="searchCon">
+<div class="searchTit"><img src="{MOBI_PATH}/public/images/searchLately.png" width="17" height="17" alt="" class="pr10"/>最近搜索</div>
+<div class=" searchList clr fix">
+<ul id="userkeylist">
+<!--<li><a href="#">母乳喂养</a></li>-->
+</ul>
+</div>
+</div>
+</div>
+<script src="{MOBI_PATH}/public/js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+$.getJSON('{url('mobi2/search/getuserkey')}',function(data){
+    var li_html = "";
+    if(data){
+        for(var i = 0; (i< data.length); i++){            
+            if(data[i]["keywords"]){
+                li_html += '<li><a href="'+'{url("mobi2/search/getListbyKey")}&key='+data[i]["keywords"] +'">'+ data[i]["keywords"]+'</a></li>';
+            }
+        }
+    }
+    $("#userkeylist").html(li_html);
+});
+
+
+
+$(".rightsearch").click(function(){
+    var key = $(".ipt").val();    
+    if(key){        
+         $.getJSON('{url('mobi2/search/addKey')}&key='+key,function(data){
+//             console.log(data); 
+          });       
+        window.location.href= "{url('mobi2/search/getListbyKey')}&key="+key;
+    }
+    
+});      
+</script>
+</body>
+</html>

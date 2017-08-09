@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+	<div class="subnav">
+		<div class="content-menu ib-a blue line-x">
+			<a href="{url('admin/score/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+			{if admin_auth($userinfo['roleid'], 'blog_tags-add')}<a href="{url('admin/score/one')}"><em>{lang('a-add')}</em></a><span>|</span>{/if}
+
+            {loop $types $k=>$v}
+                {if $v['pid']>0}
+                <a href="{url('admin/score/index',array('type_id'=>$v['id']))}" {if $v['id']==$type_id}class="on"{/if}><em>{$v['name']}</em></a><span>|</span>
+                {/if}
+            {/loop}
+		</div>
+		<div class="bk10"></div>
+		<div class="explain-col">
+			
+		</div>
+	</div>
+	
+	<div class="table-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th></th>
+					<th>ID</th>
+					<th>Rule_id</th>
+                    <th>名称</th>
+                    <th>积分</th>
+					<th>详情</th>
+					<th>每天次数</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{loop $data $k=>$v}
+				<tr>
+					<td><input type="checkbox" name="id[]" value="{$v['value']['rule_id']}"></td>
+                    <td>{$k +1}</td>
+					<td>{$v['value']['rule_id']}</td>
+					<td>{$v['value']['name']}</td>
+					<td>{$v['value']['count']}</td>
+					<td>{$v['value']['description']}</td>
+					<td>{$v['value']['day_count_limit']}</td>
+					<td>
+                        <a href="{url('admin/score/one',array('rule_id'=>$v['value']['rule_id']))}">修改</a></td>
+				</tr>
+				{/loop}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+                    <td><input type="button" value="删除" class="delAll" data-url="{url('admin/score/del')}"></td>
+                    <!--<td><input type="button" value="禁用" class="hideAll" data-url="{url('admin/blog_tags/set',array('status'=>0))}">-->
+                        <!--<input type="button" value="启用" class="showAll" data-url="{url('admin/blog_tags/set',array('status'=>1))}"></td>-->
+                    <td>{$data['pagelist']}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<script>
+    $(function() {
+        $('.chkAll').on('click',function() {
+            $(':checkbox').not(':last').attr('checked', this.checked);
+        });
+
+        $('.pid').on('change',function(){
+            var pid = $(this).val();
+            $('.type'+pid).show().siblings('select:gt(0)').hide();
+        });
+        $('.pid').on('change',function(){
+            $('.in_pid').val($(this).val());
+        });
+        $('.type_id').on('change',function(){
+            $('.in_type_id').val($(this).val());
+        });
+        //批量分类
+        $('.setAll').on('click',function(){
+            var chk = [],k= 0,pid =$('.in_pid').val(),type_id=$('.in_type_id').val() ;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'ids':chk.join(','),'pid':pid,'type_id':type_id},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+        //批量删除
+        $('.delAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+        //批量隐藏
+        $('.hideAll').on('click',function(){
+            var chk = Array();
+            $(':checked').not('.chkAll').each(function(i,e){
+                chk[i] = $(e).attr('value');
+            });
+            chk.shift();
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+        //批量显示
+        $('.showAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>

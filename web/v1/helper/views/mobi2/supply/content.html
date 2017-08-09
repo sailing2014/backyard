@@ -1,0 +1,79 @@
+<!doctype html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Cache-Control" content="max-age=0" />
+<meta name="MobileOptimized" content="240" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+<title>{$title}</title>
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/common.css" type="text/css" />
+<link rel="stylesheet"  href="{MOBI_PATH}/public/css/style.css" type="text/css" />
+</head>
+<body>
+ <!--头部文字-->
+<div class="searchTop">
+<a class="leftarrow" href="#" onClick="javascript:history.back(-1);return false;"><img src="{MOBI_PATH}/public/images/searcharrow.png" width="10" height="17" alt=""/></a>
+<h1>{$title}</h1>
+<a class="exit" href="http://htmlQuit"><img src="{MOBI_PATH}/public/images/exit.png" width="15" height="17" alt=""/></a>
+</div>
+<!--头部文字-->
+<div class="mainCon mt44">
+<div class="special">
+    {if  $content}
+<h1>{$content[0]['title']}</h1>
+ <p class="p3">
+     {loop $content[0]['tag'] $v}
+     <span>{$v}</span>      
+      {/loop}
+ </p>
+ <div class="specialpic specialtxt ">{htmlspecialchars_decode($content[0]['content'])}</div>  
+ {/if}
+</div>
+<!---->
+ <div class="relatedbox clearfix">
+ <span class="floatleft">相关阅读</span>
+ <span class="floatright">
+     {if $content[0]['tag']}
+     {loop $content[0]['tag'] $k=>$v}
+       {if $k<2}
+      <a href="{url('mobi2/supply/getListByTag')}&tag={$v}&type_id={$type_id}" class="relatedbtn">{$v}</a>
+      {/if}
+    {/loop}
+   {/if}
+  </span>
+ </div>
+ <div class="relatedList">
+ <ul id="releated">
+<!-- <li><span class="dot"></span><a href="#">如何保证母乳喂养的成功</a></li>
+ <li><span class="dot"></span><a href="#">如何保证母乳喂养的成功</a></li>
+ <li><span class="dot"></span><a href="#">如何保证母乳喂养的成功</a></li> -->
+ </ul>
+ </div>
+</div>
+<script src="{MOBI_PATH}/public/js/jquery-1.8.3.min.js"></script>
+<script src="{MOBI_PATH}/public/js/TouchSlide.1.1.js"></script>
+<script type="text/javascript">
+    var readSupplyId = sessionStorage.getItem("readSupplyId");  
+    if(!readSupplyId){
+        readSupplyId = {$content[0]["id"]};
+    }else{
+        if(-1 == readSupplyId.indexOf({$content[0]["id"]})){
+            readSupplyId +=",{$content[0]["id"]}";            
+        }
+    }
+    sessionStorage.setItem("readSupplyId",readSupplyId);
+    $.getJSON("{url('mobi2/supply/getListByTypeId')}",{ type_id: {$type_id}, read_id: readSupplyId},function(data){        
+        var ul_html = "";
+        if(data){            
+            for(var i = 0; i < data["data"].length; i++){
+                ul_html += '<li><span class="dot"></span><a href="'+"{url('mobi2/supply/getcontent')}" 
+                        +'&id='+data["data"][i]["id"]+'&type_id='+ {$type_id}
+                        +'">'+ data['data'][i]['title']+'</a></li>';
+            }
+        }
+       $("#releated").html(ul_html);
+    });
+</script>
+</body>
+</html>

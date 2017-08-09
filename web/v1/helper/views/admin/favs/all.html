@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/main.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+    <link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+</head>
+<body>
+<div class="subnav">
+    <div class="content-menu ib-a blue line-x">
+        <a href="{url('admin/favs/index')}" class="on"><em>{lang('a-list')}</em></a><span>|</span>
+    </div>
+    <div class="bk10"></div>
+    <div class="explain-col">
+        <!--<form action="" method="get">-->
+            <!--<input type="hidden" name="s" value="admin">-->
+            <!--<input type="hidden" name="c" value="favs">-->
+            <!--<input type="hidden" name="a" value="index">-->
+        <!--</form>-->
+    </div>
+</div>
+
+<div class="table-list">
+    <table width="100%">
+        <thead>
+        <tr>
+            <th width="40"></th>
+            <th width="80">ID</th>
+            <th>名称</th>
+            <th>类型</th>
+            <th>点击</th>
+            <th width="100">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {loop $data['data'] $v}
+        <tr>
+            <td><input type="checkbox" name="id[]" value="{$v['id']}"></td>
+            <td>{$v['id']}</td>
+            <td>{$v['name']}</td>
+            <td>{$types[$v['type_id']]}</td>
+            <td>{$v['hits']}</td>
+            <td><a href="{url('admin/favs/one',array('id'=>$v['id']))}">修改</a></td>
+        </tr>
+        {/loop}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td><input type="checkbox" name="chkAll" class="chkAll"> </td>
+            <td><input type="button" value="删除" class="delAll" data-url="{url('admin/favs/del')}"></td>
+            <td>
+                <select name="type_id">
+                    <option value="0">未知类型</option>
+                    {loop $types $k=>$v}
+                    <option value="{$k}">{$v}</option>
+                    {/loop}
+                </select>
+            <input type="button" value="批量分类" class="setAll" data-url="{url('admin/favs/set')}"></td>
+            <td colspan="4">{$data['pagelist']}</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+    $(function() {
+
+        $('.chkAll').on('click',function() {
+            $(':checkbox').not(':last').attr('checked', this.checked);
+        });
+
+        $('.delAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+
+        $('.setAll').on('click',function(){
+            var chk = Array(),
+                    type_id = $('[name=type_id]').val();
+            $(':checked').not('.chkAll').each(function(i,e){
+                chk[i] = $(e).attr('value');
+            });
+            chk.shift();
+            $.getJSON($(this).data('url'),{'ids':chk.join(','),'type_id':type_id},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+
+        $('.hideAll').on('click',function(){
+            var chk = Array();
+            $(':checked').not('.chkAll').each(function(i,e){
+                chk[i] = $(e).attr('value');
+            });
+            chk.shift();
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        });
+
+        $('.showAll').on('click',function(){
+            var chk = [],k=0;
+            $(':checked').not('.chkAll').each(function(i,e){
+                if($(e).attr('value') > 0){
+                    chk[k] = $(e).attr('value');
+                    k++;
+                }
+            });
+            $.getJSON($(this).data('url'),{'ids':chk.join(',')},function(json){
+                alert(json.info);
+                if(json.code){
+                    location.href='';
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>

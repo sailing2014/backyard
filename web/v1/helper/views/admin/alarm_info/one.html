@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+<script type="text/javascript" src="{ADMIN_THEME}js/dialog.js"></script>
+<script type="text/javascript" src="{LANG_PATH}lang.js"></script>
+<script type="text/javascript" src="{ADMIN_THEME}js/core.js"></script>
+<title>admin</title>
+</head>
+<body style="font-weight: normal;">
+<div class="subnav">
+	<div class="content-menu ib-a blue line-x">
+		<a href="{url('admin/alarm_info/index')}"><em>{lang('a-list')}</em></a>
+		<span>|</span>
+		<a href="javascript:;" class="on"><em>{lang('a-edit')}</em></a>
+	</div>
+	<div class="bk10"></div>
+	<div class="table-list">
+		<form method="post" action="">
+		<table width="100%" class="table_form">
+			<tbody>
+                <tr>
+                    <th width="20%">ID：</th>
+                    <td>{$data['alarm_info_id']}</td>
+                </tr>
+                <tr>
+                    <th>消息类别：</th>
+                    <td>
+                        <select class="pid">
+                        {loop $types $k=>$v}
+                            {if $v['pid']==0}
+                            <option value="{$v['id']}" {if $data['pid']==$v['id']}selected{/if}>{$v['name']}</option>
+                            {/if}
+                        {/loop}
+                        </select>
+                        <input type="hidden" name="pid" value="{$data['pid']}"/>
+                        {loop $types $k=>$v}
+                            {if $v['pid']==0}
+                                <!--{$v['id']}-{$data['pid']}-->
+                                <select class="type_id type{$v['id']}" {if $v['id']<>$data['pid'] }style="display:none;"{/if}>
+                                <option value="">-选择-</option>
+                                    {loop $types $kk=>$vv}
+                                        {if $v['id']==$vv['pid']}
+                                            <option value="{$vv['id']}" {if $vv['id']==$data['type_id'] }selected{/if}>{$vv['name']}</option>
+                                        {/if}
+                                    {/loop}
+                                </select>
+                            {/if}
+                        {/loop}
+                        <input type="hidden" name="type_id" value="{$data['type_id']}"/>
+                    </td>
+                </tr>
+
+				<tr>
+					<th>消息方式：</th>
+					<td>{loop $methods $k=>$v}
+                        <label><input type="checkbox" name="method[{$k}]" value="1"  {if $data['method'][$k]}checked{/if} />{$v}</label>
+                        {/loop}</td>
+				</tr>
+                <tr>
+                    <th>消息原因：</th>
+                    <td><input type="text" name="reason" value="{$data['reason']}" class="input-text" size="50"/></td>
+                </tr>
+                <tr>
+                    <th>消息内容：</th>
+                    <td><textarea name="content" class="input-text" rows="4" cols="50">{$data['content']}</textarea></td>
+                </tr>
+                <tr>
+                    <th><b>扩展数据</b></th>
+                    <td></td>
+                </tr>
+                <!--if $data['type_id']==7-->
+                <tr>
+                    <th>消息级别：</th>
+                    <td>{loop $levels $k =>$v}
+                        {php if($k==0)continue;}
+                        <label><input type="radio" name="level" value="{$k}" {if $k==$data['level']}checked{/if} />{$v}</label>&nbsp;
+                        {/loop}<div class="onShow">报警消息专有</div></td>
+                </tr>
+                <!--疫苗提醒-->
+                <!--if $data['type_id']==10-->
+                    <tr>
+                        <th>疫苗ID：</th>
+                        <td><input type="text" name="vaccine_id" class="input_text" value="{$data['vaccine_id']}"/><div class="onShow">疫苗提醒专有</div></td>
+                    </tr>
+                <tr>
+                    <th></th>
+                    <td><input type="button" value="保存"/></td>
+                </tr>
+			</tbody>
+		</table>
+	</form>
+	</div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('form').submit(function(){return false;});
+        $(':button').on('click',function(){
+            var form = $(this).parents('form');
+            $.post(form.attr('action'),form.serialize(),function(json){
+                alert(json.info);
+                if(json.code){
+                    history.go(-1);
+                }else{
+                    location.href="";
+                }
+            },'json');
+        });
+
+        $('.pid').on('change',function(){
+            var pid = $(this).val();
+            $('.type'+pid).show().siblings(':gt(0)').hide();
+        });
+        $('.pid').on('change',function(){
+            $('[name=pid]').val($(this).val());
+        });
+        $('.type_id').on('change',function(){
+            $('[name=type_id]').val($(this).val());
+        });
+    })
+</script>
+</body>
+</html>

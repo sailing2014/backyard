@@ -1,0 +1,707 @@
+<!doctype html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8">
+
+<title>趣宝宝</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="{MOBI_PATH}/public/css/style.css">
+
+</head>
+
+
+
+<body>
+
+<!--视频广告/图片广告+宝宝信息-->
+
+<section class="index-video">
+
+
+
+    {if $entity_id}<!--有设备 - 视频广告-->
+
+        <div class="index-video-ready">
+
+            <i class="glyphicon glyphicon-play-circle"></i>
+
+            <img src="{MOBI_PATH}/public/images/min/index_1.jpg">
+
+        </div>
+
+    {else}<!--无设备 - 轮播广告-->
+
+        <div id="slideBox-top" class="slideBox">
+
+            <div class="bd">
+
+                <ul>
+
+                    {if $advertData}
+
+                    {loop $advertData $v}
+
+                        <li><a class="pic" href="{$v["url"]}" onclick=setClick()><img src="{$v["thumb"]}" /></a></li>
+
+                    {/loop}
+
+                    {else}
+
+                    <li></li>
+
+                    {/if}
+
+                </ul>
+
+            </div>
+
+            <div class="hd">
+
+                <ul></ul>
+
+            </div>
+
+        </div>
+
+    {/if}
+
+
+
+
+
+    <i class="qbbicons icon-homegroup"></i>
+
+
+
+    <div class="index-baby">
+
+        {if $entity_id}
+
+        <!--有宝宝-->
+
+            <div class="index-baby-left">
+
+                <div class="index-baby-img pull-left">
+
+                    <img src="{$entityData["avatar"]}" class="img-circle">
+
+                </div>
+
+                <div class="index-baby-old pull-left">
+
+                    <span>
+
+                        {if $entityData["growup"]["month"]}{$entityData["growup"]["month"]}个月{/if}
+
+                        {if $entityData["growup"]["day"]}{$entityData["growup"]["day"]}天{/if}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="index-baby-attr">
+
+                <span>星座：<font>{$entityData["zodiac"]}</font></span>
+
+                <span>血型：<font>{$entityData["blood_type"]}</font></span>
+
+                <span>属相：<font>{$entityData["animal"]}</font></span>
+
+            </div>
+
+        {else}
+
+        <!--无宝宝-->
+
+            <div class="index-baby-left">
+
+                <div class="index-baby-img pull-left">
+
+                    <img src="{MOBI_PATH}/public/images/avatar.jpg" class="img-circle">
+
+                </div>
+
+                <div class="index-baby-old pull-left">
+
+                    <span>未设置宝宝</span>
+
+                </div>
+
+            </div>
+
+        {/if}
+
+    </div>
+
+
+
+</section>
+
+<!--成长指标-->
+
+<section class="index-indicator">
+
+    <div>
+
+        {if $entity_id}<!--有设备-->
+
+            <ul>
+
+                <li class="index-indicator-left text-center"><font>成长指标</font><h3>{if count($abnormalData)}异常{else}正常{/if}</h3></li>
+
+                <li class="index-indicator-middle" id="marquee">
+                    {if $abnormalData}
+                <ul id="marqueeul">
+                        {loop $abnormalData $v}
+
+                            <li>{$v}</li>
+
+                        {/loop}
+                </ul>
+                    {else}
+                        <p>设备绑定成功，正在贴心守护宝宝健康成长</p>
+                    {/if}</li>
+
+                <!--  http://dev.qbb.qiwocloud1.com/v1/helper/index.php?s=mobi&c=babydata&a=heartbeat -->
+
+                <li class="index-indicator-right"><a href="javascript:;"   onclick=setClick("deviceData","成长指标")>查看详情 </a></li>
+
+            </ul>
+
+        {else}<!--无设备-->
+
+            <ul>
+
+                <li class="index-indicator-left text-center"><font>成长指标</font><h3 class="grey">未绑定</h3></li>
+
+                <li class="index-indicator-middle">
+
+                    趣宝宝婴儿智能守护套件，专为0-1岁宝宝的私人定制</li>
+
+                <!-- http://www.qbb.net/appforapp.html -->
+
+                <li class="index-indicator-right"><a href="javascript:;"  onclick=setClick("viewProduct","产品介绍")>产品介绍 </a></li>
+
+            </ul>
+
+        {/if}
+
+        <div class="clearfix"></div>
+
+    </div>
+
+</section>
+
+
+
+{if $entity_id}
+
+<!--有设备 - 轮播广告-->
+
+<section>
+
+    <div id="slideBox" class="slideBox">
+
+        <div class="bd">
+
+            <ul>
+
+                {if $advertData}
+
+                {loop $advertData $v}
+
+                    <li onclick=setClick("advertList","","{$v["url"]}")><a class="pic" href="#"><img src="{$v["thumb"]}" /></a></li>
+
+                {/loop}
+
+                {else}
+
+                <li></li>
+
+                {/if}
+
+            </ul>
+
+        </div>
+
+        <div class="hd">
+
+            <ul></ul>
+
+        </div>
+
+    </div>
+
+</section>
+
+{/if}
+
+
+
+{if $entity_id}
+
+<!--有设备 - 重要提醒-->
+
+<section>
+
+    <div class="container index-con">
+
+        <div class="index-tit">
+
+            <a href="javascript:;" onclick=setClick("vaccineRemind","提醒") class="pull-right"><i class="glyphicon glyphicon-menu-right pull-right"></i>更多</a>
+
+            <span><i class="qbbicons icon-forgot"></i>重要事别忘了</span>
+
+        </div>
+
+        <div class="index-list index-forgot">
+
+            <ul><!-- 网页 http://dev.qbb.qiwocloud1.com/v1/helper/index.php?c=content&a=show&id=213 -->
+
+                {loop $eventData $k=>$v}
+
+                <li onclick=setClick("vaccineRemind","疫苗详情",{$v["vaccine_id"]})>
+
+                    <span class="pull-right"><i class="glyphicon glyphicon-menu-right pull-right"></i>还有<em>{$v["near_time"]}</em>天</span>
+
+                    <a href="javascript:;"><p>{$v["content"]}</p>{date("Y 年 m 月 d 日 H:i",$v["time"])}</a>
+
+                </li>
+
+                {/loop}
+
+                <!--<li>-->
+
+                    <!--<span class="pull-right"><i class="glyphicon glyphicon-menu-right pull-right"></i>还有<em>5</em>天</span>-->
+
+                    <!--<a href="javascript:;"><p>带宝宝打疫苗</p>2015年01月10日 17:00</a>-->
+
+                <!--</li>-->
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!--有设备 - 今日要点-->
+
+<section>
+
+    <div class="container index-con">
+
+        <div class="index-tit">
+
+            <!-- JSON http://dev.qbb.qiwocloud1.com/v1/helper/api.php?c=helper&a=getlist&catid=20&week=14 -->
+
+            <!-- 网页 http://dev.qbb.qiwocloud1.com/v1/helper/index.php?c=content&a=show&id=380 -->
+
+            <a href="javascript:;" data-id="{$week}" onclick=setClick("keyPoints","今日护理要点",{$week}) class="pull-right"><i class="glyphicon glyphicon-menu-right pull-right"></i>更多</a>
+
+            <span><i class="qbbicons icon-nurse"></i>今日护理要点</span>
+
+        </div>
+
+        <div class="index-list index-nurse">
+
+            <p>{$dailyData["description"]}</p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{/if}
+
+
+
+<section>
+
+    <div class="container index-con">
+
+        <div class="index-list index-general">
+
+            <ul>
+
+                <!--  http://dev.qbb.qiwocloud1.com/v1/helper/index.php?s=mobi&c=helper&a=list&type_id=1-->
+
+                <li class="col-xs-4"><div class="index-general-1"  onclick=setClick("mixKnowledges","吃喝","1")><a href="#">吃喝</a></div></li>
+
+                <li class="col-xs-4"><div class="index-general-2"  onclick=setClick("mixKnowledges","便便","2")><a href="#">便便</a></div></li>
+
+                <li class="col-xs-4"><div class="index-general-3"  onclick=setClick("mixKnowledges","睡眠","3")><a href="#">睡眠</a></div></li>
+
+            </ul>
+
+            <div class="clearfix"></div>
+
+        </div>
+
+        <!--  http://dev.qbb.qiwocloud1.com/v1/helper/index.php?s=mobi&c=helper&a=index-->
+
+        <div class="index-general-more"  onclick=setClick("mixKnowledges","",{url("mobi/helper/index")})><a href="{url("mobi/helper/index")}">查看更多</a></div>
+
+    </div>
+
+</section>
+
+
+
+<!--无接口 - 推荐专栏-->
+
+<!--<section>-->
+
+    <!--<div class="container index-con">-->
+
+        <!--<div class="index-tit">-->
+
+            <!--<a href="javascript:;" class="pull-right"><i class="glyphicon glyphicon-menu-right pull-right"></i>更多</a>-->
+
+            <!--<span><i class="qbbicons icon-doc"></i>专家专栏</span>-->
+
+        <!--</div>-->
+
+        <!--<div class="index-list index-doc">-->
+
+            <!--<a href="javascript:;">-->
+
+                <!--<div class="index-doc-pic pull-left"><img src="{MOBI_PATH}/public/images/img-test-4.jpg"></div>-->
+
+                <!--<div class="index-doc-con pull-left">-->
+
+                    <!--<p class="index-doc-con-1">自然分娩你准备好了吗？</p>-->
+
+                    <!--<p class="index-doc-con-2">妇产科专家：严楚</p>-->
+
+                    <!--<p class="index-doc-con-3">深圳第二人民医院主任医师</p>-->
+
+                <!--</div>-->
+
+            <!--</a>-->
+
+        <!--</div>-->
+
+    <!--</div>-->
+
+<!--</section>-->
+
+
+
+<!--用品清单-->
+
+<section>
+
+    <div class="container index-con">
+
+        <div class="index-tit">
+
+            <!-- http://dev.qbb.qiwocloud1.com/v1/helper/index.php?s=category_jump&a=show&siteid=1&month=4 -->
+
+            <a href="javascript:;"  onclick=setClick("productList","用品清单") class="pull-right"><i class="glyphicon glyphicon-menu-right pull-right"></i>更多</a>
+
+            <span><i class="qbbicons icon-uselist"></i>用品清单</span>
+
+        </div>
+
+        <div class="index-list index-uselist">
+
+
+
+            <!-- http://dev.qbb.qiwocloud1.com/v1/helper/index.php?c=content&a=show&id=380 -->
+
+            {loop $uselistData $v}
+
+            <a href="javascript:;"  onclick=setClick("productList","用品清单",{$month})><img src="{$v["thumb"]}"><p>{$v["title"]}</p></a>
+
+            {/loop}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!--推荐看看-->
+
+<section>
+
+    <div class="container index-con index-con-see">
+
+        <div class="index-tit">
+
+            <p class="index-see-count pull-right"></p>
+
+            <span><i class="qbbicons icon-see"></i>看看</span>
+
+        </div>
+
+        <div class="index-list index-see">
+
+            <div id="slideBox-see" class="slideBox">
+
+                <div class="bd">
+
+                    <ul>
+
+                        {loop $diaryData $v}
+
+                        <li>
+
+                            <a class="pic" href="#"   onclick=setClick("diaryRecently","看看","{$v['d_id']},{$entity_id}")><img src="{$v["d_thumb_url"]}" /></a>
+
+                            <a class="tit" href="#">
+
+                                <div class="pull-right">
+
+                                    <span class="pull-left"><i class="qbbicons icon-hits"></i>{$v["d_comment_num"]}</span>
+
+                                    <span class="pull-left"><i class="qbbicons icon-heart"></i>{$v["d_praise_num"]}</span>
+
+                                </div>
+
+                            </a>
+
+                        </li>
+
+                        {/loop}
+
+                    </ul>
+
+                </div>
+
+                <div class="hd">
+
+                    <ul></ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!--推荐试用-->
+
+<section>
+
+    <div class="container index-con-try">
+
+        <!-- https://dev.bbc.qiwocloud1.com/bbc_tryout/v1/view/intromain?tryOutDetailId=1 -->
+
+        <a href="javascript:;"   onclick=setClick("hotTryout","试用","{$tryoutData["tryOutDetailId"]}")><img alt="{$tryoutData["activeName"]}" src="{$tryoutData["tryOutDetailImg"]}"></a>
+
+    </div>
+
+</section>
+
+
+
+<!--无接口 - 推荐商品-->
+
+<!--<section class="mb10">-->
+
+    <!--<div class="container index-con">-->
+
+        <!--<div class="index-tit">-->
+
+            <!--<a href="javascript:;" class="pull-right"><i class="glyphicon glyphicon-menu-right pull-right"></i>更多</a>-->
+
+            <!--<span><i class="qbbicons icon-shop"></i>商城</span>-->
+
+        <!--</div>-->
+
+        <!--<div class="index-list index-shop">-->
+
+            <!--<ul>-->
+
+                <!--<li class="col-xs-6">-->
+
+                    <!--<a href="">-->
+
+                        <!--<img src="{MOBI_PATH}/public/images/img-test-8.jpg">-->
+
+                        <!--<h4>宝宝精选个月食物选</h4>-->
+
+                        <!--<span>韩国直供洪州发货</span>-->
+
+                        <!--<p>￥69.00<em>7折</em></p>-->
+
+                        <!--<span>国内参考价<del>￥269.00</del></span>-->
+
+                    <!--</a>-->
+
+                <!--</li>-->
+
+                <!--<li class="col-xs-6">-->
+
+                    <!--<a href="">-->
+
+                        <!--<img src="{MOBI_PATH}/public/images/img-test-9.jpg">-->
+
+                        <!--<h4>宝宝精选个月食物选</h4>-->
+
+                        <!--<span>韩国直供洪州发货</span>-->
+
+                        <!--<p>￥69.00<em>7折</em></p>-->
+
+                        <!--<span>国内参考价<del>￥269.00</del></span>-->
+
+                    <!--</a>-->
+
+                <!--</li>-->
+
+            <!--</ul>-->
+
+        <!--</div>-->
+
+    <!--</div>-->
+
+<!--</section>-->
+
+
+
+
+
+<script src="{MOBI_PATH}/public/js/jquery.min.js"></script>
+
+<script src="{MOBI_PATH}/public/js/TouchSlide.1.1.js"></script>
+
+<script type="text/javascript">
+
+    $(function(){
+
+        {if $bind_camera}
+
+            var anomalies_url = "{url("mobi/index/anomalies")}";
+
+            setInterval(function(){
+
+                $.getJSON(anomalies_url,function(json){
+
+                    console.log(json.data);
+
+                    if(json.status.code==200){ //异步成功
+
+                        
+
+                    }else if(json.status.code==400){ //异步失败
+
+                        alert("网络请求失败");
+
+                    }else if(json.status.code==600){ //提示登录
+
+                        alert("请您重新登录");
+
+                    }
+
+                });
+
+            },10000);
+
+        {/if}
+
+    })
+
+    // 无宝宝时，顶部轮换图
+
+    TouchSlide({
+
+        slideCell:"#slideBox-top",
+
+        titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+
+        mainCell:".bd ul",
+
+        effect:"leftLoop",
+
+        autoPage:true //自动分页
+
+    });
+
+
+
+    // 焦点图
+
+    TouchSlide({ 
+
+        slideCell:"#slideBox",
+
+        titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+
+        mainCell:".bd ul", 
+
+        effect:"leftLoop", 
+
+        autoPage:true //自动分页
+
+    });
+
+    
+
+    // 看看
+
+    TouchSlide({ 
+
+        slideCell:"#slideBox-see",
+
+        titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+
+        mainCell:".bd ul", 
+
+        effect:"leftLoop", 
+
+        autoPage:true, //自动分页
+
+        endFun : function () {
+
+            var see_total = $("#slideBox-see .bd").find("li").size() - 2;
+
+            var see_cur = $("#slideBox-see .hd").find(".on").html();
+
+            $(".index-see-count").html("<em>" + see_cur + "</em> / " + see_total);
+
+        }
+
+    });
+
+    function setClick(handle,title,param){
+
+        if("1"=="{$devicetype}")  {
+
+            window.bbcare_android.onTestClick(handle,title,param);
+
+        }  else if("2"=="{$devicetype}") {
+
+            iosclick(handle,title,param);
+
+        }
+
+    }
+    {if $abnormalData}
+    new Marquee(["marquee","marqueeul"],0,1,"45%",48,20,4000,2000)
+    {/if}
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="{ADMIN_THEME}images/reset.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/system.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/dialog.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/switchbox.css" rel="stylesheet" type="text/css" />
+<link href="{ADMIN_THEME}images/table_form.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{ADMIN_THEME}js/jquery.min.js"></script>
+<script type="text/javascript" src="{ADMIN_THEME}js/dialog.js"></script>
+<script type="text/javascript" src="{LANG_PATH}lang.js"></script>
+<script type="text/javascript" src="{ADMIN_THEME}js/core.js"></script>
+<title>admin</title>
+</head>
+<body style="font-weight: normal;">
+<div class="subnav">
+	<div class="content-menu ib-a blue line-x">
+		<a href="{url('admin/analysis/index',array('id'=>$data['device_type']))}"><em>{lang('a-list')}</em></a>
+		<span>|</span>
+		<a href="javascript:;" class="on"><em>{if $_GET['id']}{lang('a-edit')}{else}{lang('a-add')}{/if}</em></a>
+	</div>
+	<div class="bk10"></div>
+	<div class="table-list">
+		<form method="post" action="{$_SERVER['REQUEST_URI']}">
+		<table width="100%" class="table_form">
+			<tbody>
+				<tr>
+					<th width="20%">设备：</th>
+					<td>{loop $devices $k=>$v}
+						<label><input type="radio" name="device_type" value="{$k}" {if $k==$data['device_type']}checked{/if}>{$v['name']}</label>
+					{/loop}</td>
+				</tr>
+				<tr>
+					<th>传感器：</th>
+					<td>{loop $sensors $k=>$v}
+							<label>
+								<input type="radio" name="data_type" value="{$k}" {if $k ==$data['data_type']}checked{/if}>{$v}
+							</label>
+						{/loop}
+					</td>
+				</tr>
+				<tr>
+					<th>宝宝年龄：</th>
+					<td><select name="month">
+						{php for($m=1;$m<13;$m++){ }
+							<option value="{$m}" {if $m == $data['month']}selected{/if}>{$m}月</option>
+						{php } }
+					</select></td>
+				</tr>
+				<tr>
+					<th>宝宝性别：</th>
+					<td>{loop $genders $k=>$v}
+						<label><input type="radio" name="gender" value="{$k}" {if $k ==$data['gender']}checked{/if}>{$v}</label>
+						{/loop}
+						</td>
+				</tr>
+				<tr>
+					<th>正常范围：</th>
+					<td>
+						<input type="text" name="min_value" value="{$data['min_value']}" class="input-text">-
+						<input type="text" name="max_value" value="{$data['max_value']}" class="input-text"></td>
+				</tr>
+				<tr>
+					<th>用户可设范围：</th>
+					<td>
+						<input type="text" name="user_min_value" value="{$data['user_min_value']}" class="input-text">-
+						<input type="text" name="user_max_value" value="{$data['user_max_value']}" class="input-text"></td>
+				</tr>
+				<tr>
+					<th></th>
+					<td><input type="button" value="保存"></td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$(':button').click(function() {
+            $.post(
+            	$('form').attr('action'),
+            	$('form').serialize(),
+            	function(json) {
+	            	alert(json.info);
+	            	if(json.code){
+	            		history.go(-1);
+	            	}else{
+	            		location.href = "";
+	            	}
+            });
+        });
+})
+</script>
+</body>
+</html>
